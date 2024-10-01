@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">EcoEats_p</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -126,27 +126,6 @@
         <DCCReference Include="frmMain_u.pas">
             <Form>Form9</Form>
             <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="global_u.pas"/>
-        <DCCReference Include="iAdmin_u.pas"/>
-        <DCCReference Include="iAlpha_u.pas"/>
-        <DCCReference Include="iCustomer_u.pas"/>
-        <DCCReference Include="iDatabaseManager_u.pas"/>
-        <DCCReference Include="iLogin_u.pas"/>
-        <DCCReference Include="iSupplier_u.pas"/>
-        <DCCReference Include="users_u.pas"/>
-        <DCCReference Include="clsAdmin_u.pas"/>
-        <DCCReference Include="clsAlpha_u.pas"/>
-        <DCCReference Include="clsCustomer_u.pas"/>
-        <DCCReference Include="clsDatabaseManager_u.pas"/>
-        <DCCReference Include="clsFactory_u.pas"/>
-        <DCCReference Include="clsLogin_u.pas"/>
-        <DCCReference Include="clsMockLogin_u.pas"/>
-        <DCCReference Include="clsSupplier_u.pas"/>
-        <DCCReference Include="dmMain_u.pas">
-            <Form>dmMain</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
