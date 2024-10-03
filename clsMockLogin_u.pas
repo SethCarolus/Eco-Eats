@@ -1,7 +1,8 @@
 unit clsMockLogin_u;
 
 interface
-  uses global_u, iDatabaseManager_u, iLogin_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u;
+  uses global_u, iDatabaseManager_u, iLogin_u, iCustomer_u, iAdmin_u,
+      iSupplier_u, iAlpha_u, iBank_u, iBankCard_u;
   type
     TMockLogin = class(TInterfacedObject, ILogin)
       private
@@ -15,9 +16,14 @@ interface
         function getAdmin(const username : string) : IAdmin;
         function getSupplier(const username : string) : ISupplier;
         function getAlpha(const username : string) : IAlpha;
+
+        function getBankCard(const id: Integer): IBankCard;
+        function getBank(const id: Integer): IBank;
+
+        procedure setupCustomer(const username : string);
     end;
 implementation
-  uses SysUtils, clsFactory_u;
+  uses SysUtils, clsFactory_u, users_u;
 
 { TMockLogin }
 
@@ -40,6 +46,16 @@ begin
     raise Exception.Create('username cannot be null or empty');
 
   Result := TFactory.createAlpha(-1, 'username');
+end;
+
+function TMockLogin.getBank(const id: Integer): IBank;
+begin
+
+end;
+
+function TMockLogin.getBankCard(const id: Integer): IBankCard;
+begin
+
 end;
 
 function TMockLogin.getCustomer(const username: string): iCustomer;
@@ -88,6 +104,16 @@ begin
 
 
 end;
+/// <summary>
+///   This function will setup variables to do with a mock customer entity
+/// </summary>
+procedure TMockLogin.setupCustomer(const username: string);
+begin
+   currentCustomer := TFactory.createCustomer(0, 'username', 'user', 'name', 'ProfilePicture.jpeg', 0);
+   currentBankCard := TFactory.createBankCard(0, 'USERNAME', Now,'123', 39_000, 0);
+   currentBank := TFactory.createBank(0, 'FB', 'Fake Bank', '0722634804');
+end;
+
 /// <summary>
 ///   This function will return true if the username = 'username'
 /// </summary>

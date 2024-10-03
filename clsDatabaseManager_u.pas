@@ -1,7 +1,7 @@
 unit clsDatabaseManager_u;
 
 interface
-  uses dmMain_u, global_u, iDatabaseManager_u, iCustomer_u, clsFactory_u, iAdmin_u, iSupplier_u, iAlpha_u;
+  uses dmMain_u, global_u, iDatabaseManager_u, iCustomer_u, clsFactory_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
 
   type
     TDatabaseManager = class(TInterfacedObject, IDatabaseManager)
@@ -15,6 +15,8 @@ interface
         function getAdmin(const username : string) : IAdmin;
         function getSupplier(const username : string) : ISupplier;
         function getAlpha(const username : string) : IAlpha;
+        function getBankCard(const id: Integer): IBankCard;
+        function getBank(const id: Integer): IBank;
     end;
 
 implementation
@@ -53,7 +55,39 @@ begin
       Sql.Text := 'SELECT * FROM  tblAlpha WHERE username = ' + QuotedStr(username);
       ExecSQL;
       Open;
-      Result := TFactory.CreateAlpha(FieldByName('ID').AsInteger, FieldByName('username').AsString);
+      Result := TFactory.CreateAlpha(FieldByName('id').AsInteger, FieldByName('username').AsString);
+    end;
+end;
+
+function TDatabaseManager.getBank(const id: Integer): IBank;
+begin
+  with dmMain.qryBank do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblBank WHERE id = ' + id.ToString();
+      ExecSQL;
+      Open;
+      Result := TFactory.createBank(FieldByName('id').AsInteger,
+                                    FieldByName('short_name').AsString,
+                                    FieldByName('long_name').AsString,
+                                    FieldByName('phone_number').AsString);
+    end;
+end;
+
+function TDatabaseManager.getBankCard(const id: Integer): IBankCard;
+begin
+  with dmMain.qryBankCard do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblBankCard WHERE id = ' + id.ToString();
+      ExecSQL;
+      Open;
+      Result := TFactory.createBankCard(FieldByName('id').AsInteger,
+                                        FieldByName('name_on_card').AsString,
+                                        FieldByName('expirey_date').AsDateTime,
+                                        FieldByName('security_code').AsString,
+                                        FieldByName('balance').AsCurrency,
+                                        FieldByName('bank_id').AsInteger);
     end;
 end;
 
@@ -68,7 +102,7 @@ begin
       Sql.Text := 'SELECT * FROM tblCustomer WHERE username = ' + QuotedStr(username);
       ExecSQL;
       Open;
-      Result := TFactory.createCustomer(FieldByName('Id').AsInteger
+      Result := TFactory.createCustomer(FieldByName('id').AsInteger
                                         ,FieldByName('username').AsString,
                                         FieldByName('first_name').AsString,
                                         FieldByName('last_name').AsString,

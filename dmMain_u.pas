@@ -11,21 +11,24 @@ type
     qryCustomer: TADOQuery;
     tblCustomer: TADOTable;
     dscCustomer: TDataSource;
+    qrySupplier: TADOQuery;
+    tblSupplier: TADOTable;
+    dscSupplier: TDataSource;
+    tblAlpha: TADOTable;
+    qryAlpha: TADOQuery;
+    dscAlpha: TDataSource;
     tblAdmin: TADOTable;
     qryAdmin: TADOQuery;
     dscAdmin: TDataSource;
-    tblSupplier: TADOTable;
-    dscSupplier: TDataSource;
-    qrySupplier: TADOQuery;
-    qryAlpha: TADOQuery;
-    tblAlpha: TADOTable;
-    dscAlpha: TDataSource;
-    qryProduct: TADOQuery;
     tblProduct: TADOTable;
+    qryProduct: TADOQuery;
     dscProduct: TDataSource;
     tblBankCard: TADOTable;
     qryBankCard: TADOQuery;
     dscBankCard: TDataSource;
+    tblBank: TADOTable;
+    qryBank: TADOQuery;
+    dscBank: TDataSource;
   private
     { Private declarations }
   public

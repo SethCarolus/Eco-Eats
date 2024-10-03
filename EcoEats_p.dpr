@@ -2,7 +2,6 @@ program EcoEats_p;
 
 uses
   Vcl.Forms,
-  frmMain_u in 'frmMain_u.pas' {Form9},
   global_u in 'global_u.pas',
   iAdmin_u in 'iAdmin_u.pas',
   iAlpha_u in 'iAlpha_u.pas',
@@ -19,14 +18,22 @@ uses
   clsLogin_u in 'clsLogin_u.pas',
   clsMockLogin_u in 'clsMockLogin_u.pas',
   clsSupplier_u in 'clsSupplier_u.pas',
-  dmMain_u in 'dmMain_u.pas' {dmMain: TDataModule};
+  Vcl.Themes,
+  Vcl.Styles,
+  frmMain_u in 'frmMain_u.pas' {frmMain},
+  dmMain_u in 'dmMain_u.pas' {dmMain: TDataModule},
+  clsBankCard_u in 'clsBankCard_u.pas',
+  iBankCard_u in 'iBankCard_u.pas',
+  iBank_u in 'iBank_u.pas',
+  clsBank_u in 'clsBank_u.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm9, Form9);
+  TStyleManager.TrySetStyle('Windows10 SlateGray');
+  Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TdmMain, dmMain);
   Application.Run;
 end.

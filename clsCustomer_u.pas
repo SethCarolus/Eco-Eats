@@ -57,10 +57,10 @@ end;
 constructor TCustomer.create(const id : Integer;const username, firstName, lastName,
   profilePicture: string; const bankCardId: Integer);
 begin
-  if (string.IsNullOrEmpty(username)) then raise Exception.Create('username cannot be null or empty');
-  if (string.IsNullOrEmpty(firstName)) then raise Exception.Create('firstName cannot be null or empty');
-  if (string.IsNullOrEmpty(lastName)) then raise Exception.Create('lastName cannot be null or empty');
-  if (string.IsNullOrEmpty(profilePicture)) then raise Exception.Create('profilePicture cannot be null or empty');
+  if (string.IsNullOrWhiteSpace(username)) then raise EArgumentNilException.Create('username cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(firstName)) then raise EArgumentNilException.Create('firstName cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(lastName)) then raise EArgumentNilException.Create('lastName cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(profilePicture)) then raise EArgumentNilException.Create('profilePicture cannot be null or whitespace');
 
   Self.Id := id;
   Self.Username := username;
@@ -108,8 +108,8 @@ end;
 
 procedure TCustomer.setFirstName(const firstName: string);
 begin
-  if (string .IsNullOrEmpty(firstName)) then
-    raise Exception.Create('firstName cannot be null or empty');
+  if (string.IsNullOrWhiteSpace(firstName)) then
+    raise EArgumentNilException.Create('firstName cannot be null or whitespace');
   fFirstName := firstName;
 end;
 
@@ -120,22 +120,22 @@ end;
 
 procedure TCustomer.setLastName(const lastName: string);
 begin
-  if (string .IsNullOrEmpty(lastName)) then
-    raise Exception.Create('lastName cannot be null or empty');
+  if (string.IsNullOrWhiteSpace(lastName)) then
+    raise EArgumentNilException.Create('lastName cannot be null or whitespace');
   fLastName := lastName;
 end;
 
 procedure TCustomer.setProfilePicture(const profilePicture: string);
 begin
-  if (string .IsNullOrEmpty(profilePicture)) then
-    raise Exception.Create('profilePicture cannot be null or empty');
+ if (string.IsNullOrWhiteSpace(profilePicture)) then
+  raise EArgumentNilException.Create('profilePicture cannot be null or whitespace');
   fProfilePicture := profilePicture;
 end;
 
 procedure TCustomer.setUsername(const username: string);
 begin
-  if (string .IsNullOrEmpty(username)) then
-    raise Exception.Create('username cannot be null or empty');
+  if (string.IsNullOrWhiteSpace(username)) then
+    raise EArgumentNilException.Create('username cannot be null or whitespace');
   fUsername := username;
 end;
 

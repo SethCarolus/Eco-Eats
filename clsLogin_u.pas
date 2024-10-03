@@ -1,7 +1,8 @@
 unit clsLogin_u;
 
 interface
-  uses global_u, iDatabaseManager_u, iLogin_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u;
+  uses global_u, iDatabaseManager_u, iLogin_u, iCustomer_u, iAdmin_u,
+      iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
   type
     TLogin = class(TInterfacedObject, ILogin)
       private
@@ -16,12 +17,15 @@ interface
         function getAdmin(const username : string) : IAdmin;
         function getSupplier(const username : string) : ISupplier;
         function getAlpha(const username : string) : IAlpha;
+        function getBankCard(const id: Integer): IBankCard;
+        function getBank(const id: Integer): IBank;
+
+        procedure setupCustomer(const username : string);
 
     end;
-
-
-
 implementation
+
+uses SysUtils, users_u;
 
 { TLogin }
 
@@ -43,6 +47,16 @@ begin
   Result := fDatabaseManager.getAlpha(username);
 end;
 
+function TLogin.getBank(const id: Integer): IBank;
+begin
+  Result := fDatabaseManager.getBank(id);
+end;
+
+function TLogin.getBankCard(const id: Integer): IBankCard;
+begin
+  Result := fDatabaseManager.getBankCard(id);
+end;
+
 function TLogin.getCustomer(const username : string): iCustomer;
 begin
   Result := fDatabaseManager.getCustomer(username);
@@ -61,6 +75,20 @@ end;
 function TLogin.passwordCorrect(const username : string; const password : string) : Boolean;
 begin
   Result := fDatabaseManager.passwordCorrect(username, password);
+end;
+
+procedure TLogin.setupCustomer(const username: string);
+begin
+  if (string.IsNullOrWhiteSpace(username)) then
+    raise EArgumentNilException.Create('username cannot be null or whitespace');
+
+  currentCustomer := getCustomer(username);
+
+  if (currentCustomer = nil) then
+    raise Exception.Create('current cannot be null');
+
+  currentBankCard  := getBankCard(currentCustomer.BankCardId);
+  currentBank := getBank(currentBankCard.BankId);
 end;
 
 end.

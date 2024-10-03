@@ -1,7 +1,7 @@
 unit clsFactory_u;
 
 interface
-  uses iLogin_u, iDatabaseManager_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u;
+  uses iLogin_u, iDatabaseManager_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
   type
     TFactory = class
 
@@ -12,12 +12,20 @@ interface
     class function createAdmin(const id : Integer; const username : string) : iAdmin;
     class function createSupplier(const id : Integer; const username : string) : iSupplier;
     class function createAlpha(const id : Integer; const username : string) : iAlpha;
+    class function createBankCard(const id: integer; const nameOnCard: string;
+                            const expireyDate: TDateTime;
+                            const securityCode: string; const balance: Double;
+                            const bankId: Integer): IBankCard;
+    class function createBank(const id: Integer; const shortName: string;
+                            const longName: string; const phoneNumber: string) : IBank;
 
 
   end;
 
 implementation
-  uses SysUtils, clsDatabaseManager_u, clsMockLogin_u , clsLogin_u, clsCustomer_u, clsAdmin_u, clsSupplier_u, clsAlpha_u;
+  uses SysUtils, clsDatabaseManager_u, clsMockLogin_u , clsLogin_u,
+  clsCustomer_u, clsAdmin_u, clsSupplier_u, clsAlpha_u, clsBankCard_u,
+  clsBank_u;
 
 { Factory }
 
@@ -35,13 +43,27 @@ begin
   Result := TAlpha.create(id, username);
 end;
 
+class function TFactory.createBank(const id: Integer; const shortName, longName,
+  phoneNumber: string): IBank;
+begin
+  Result := TBank.create(id, shortName, longName, phoneNumber);
+end;
+
+class function TFactory.createBankCard(const id: integer;
+  const nameOnCard: string; const expireyDate: TDateTime;
+  const securityCode: string; const balance: Double;
+  const bankId: Integer): IBankCard;
+begin
+    Result := TBankCard.Create(id, nameOnCard, expireyDate ,securityCode, balance, bankId);
+end;
+
 class function TFactory.createCustomer(const id: Integer;const username, firstName,
   lastName, profilePicture: string; const bankCardId: Integer): iCustomer;
 begin
-  if (string.IsNullOrEmpty(username)) then raise Exception.Create('username cannot be null or empty');
-  if (string.IsNullOrEmpty(firstName)) then raise Exception.Create('firstName cannot be null or empty');
-  if (string.IsNullOrEmpty(lastName)) then raise Exception.Create('lastName cannot be null or empty');
-  if (string.IsNullOrEmpty(profilePicture)) then raise Exception.Create('profilePicture cannot be null or empty');
+  if (string.IsNullOrWhiteSpace(username)) then raise EArgumentNilException.Create('username cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(firstName)) then raise EArgumentNilException.Create('firstName cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(lastName)) then raise EArgumentNilException.Create('lastName cannot be null or whitespace');
+  if (string.IsNullOrWhiteSpace(profilePicture)) then raise EArgumentNilException.Create('profilePicture cannot be null or whitespace');
 
   Result := TCustomer.create(id, username, firstName, lastName, profilePicture, bankCardId);
 end;
