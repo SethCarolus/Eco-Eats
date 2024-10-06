@@ -22,11 +22,13 @@ interface
         procedure insertCustomer(const customer : iCustomer; const password : string);
         procedure insertBankCard(const bankCard : IBankCard);
         function getBankCardWith(const accountNumber : string) : IBankCard;
+        procedure insertTimeSpentOnApplicatiom(const username: string; elapsedMinutes: Integer);
+        function getTimeSpentOnAplicationFor(const username : string) : TList<UInt64>;
     end;
 
 implementation
 
-uses SysUtils;
+uses SysUtils, IOUtils;
 
 { TDatabaseManager }
 
@@ -177,6 +179,34 @@ begin
       Result := TFactory.createSupplier(FieldByName('ID').AsInteger, FieldByName('username').AsString);
     end;
 end;
+function TDatabaseManager.getTimeSpentOnAplicationFor(
+  const username: string): TList<UInt64>;
+begin
+  if not (FileExists(FILE_NAME)) then
+    raise Exception.Create('File does not exist');
+
+  var textFile : TextFile;
+  AssignFile(textFile, FILE_NAME);
+
+  Reset(textFile);
+
+  var sLine : string;
+
+  Result := TList<UInt64>.Create();
+  while (not Eof(textFile)) do
+    begin
+      Readln(textFile, sLine);
+
+      var iPos :=  Pos('#', sLine);
+
+      if not (Copy(sLine, 0, iPos - 1) = username) then
+        continue;
+
+      Result.Add(Copy(sLine, Pos('#', sLine) + 1).ToInteger());
+    end;
+  CloseFile(textFile);
+end;
+
 function TDatabaseManager.getUserType(const username: string): TUserType;
 begin
   if (string.IsNullOrEmpty(username)) then
@@ -287,6 +317,13 @@ begin
         // Post the new record to save it
         Post;
       end;
+end;
+
+procedure TDatabaseManager.insertTimeSpentOnApplicatiom(const username: string;
+  elapsedMinutes: Integer);
+begin
+  TFile.AppendAllText(FILE_NAME, username + '#' + IntToStr(elapsedMinutes) +
+                      sLineBreak);
 end;
 
 function TDatabaseManager.passwordCorrect(const username,

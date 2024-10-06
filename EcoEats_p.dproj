@@ -158,6 +158,12 @@
         <DCCReference Include="clsSignup.pas"/>
         <DCCReference Include="iSignup_u.pas"/>
         <DCCReference Include="DatabaseExceptions_u.pas"/>
+        <DCCReference Include="clsTimer_u.pas"/>
+        <DCCReference Include="ITimer_u.pas"/>
+        <DCCReference Include="iLogout_u.pas"/>
+        <DCCReference Include="clsLogout_u.pas"/>
+        <DCCReference Include="IUserHabitHandler_u.pas"/>
+        <DCCReference Include="clsUserHabitHandler_u.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

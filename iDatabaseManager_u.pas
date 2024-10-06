@@ -16,7 +16,9 @@ interface
       function getAllBanks() : TList<IBank>;
       procedure insertCustomer(const customer : iCustomer; const password : string);
       procedure insertBankCard(const bankCard : IBankCard);
-      function getBankCardWith(const accountNumber : string) : IBankCard;
+      function getBankCardWith(const accountNumber: string) : IBankCard;
+      procedure insertTimeSpentOnApplicatiom(const username: string; elapsedMinutes: Integer);
+      function getTimeSpentOnAplicationFor(const username : string) : TList<UInt64>;
     end;
 
 implementation

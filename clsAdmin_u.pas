@@ -8,7 +8,6 @@ interface
       private
         fId : Integer;
         fUsername : string;
-
         function getUsername: string;
         procedure setUsername(const username: string);
         function getId: Integer;

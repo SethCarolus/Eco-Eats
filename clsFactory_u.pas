@@ -2,7 +2,7 @@ unit clsFactory_u;
 
 interface
   uses iLogin_u, iDatabaseManager_u, iCustomer_u, iAdmin_u, iSupplier_u,
-    iAlpha_u, iBankCard_u, iBank_u, iSignup_u;
+    iAlpha_u, iBankCard_u, iBank_u, iSignup_u, ITimer_u, iLogout_u, IUserHabitHandler_u;
   type
     TFactory = class
 
@@ -21,6 +21,9 @@ interface
                             const bankId: Integer): IBankCard;
     class function createBank(const id: Integer; const shortName: string;
                             const longName: string; const phoneNumber: string) : IBank;
+    class function createTimer(): ITimer;
+    class function createLogout(): ILogout;
+    class function createUserHabitHandler() : IUserHabitHandler;
 
 
   end;
@@ -28,7 +31,7 @@ interface
 implementation
   uses SysUtils, clsDatabaseManager_u, clsMockLogin_u , clsLogin_u,
   clsCustomer_u, clsAdmin_u, clsSupplier_u, clsAlpha_u, clsBankCard_u,
-  clsBank_u, clsSignup;
+  clsBank_u, clsSignup, clsTimer_u, clsLogout_u, clsUserHabitHandler_u;
 
 { Factory }
 
@@ -82,6 +85,11 @@ begin
     Result := TLogin.create(createDatabaseManager());
 end;
 
+class function TFactory.createLogout: ILogout;
+begin
+  Result := TLogout.create(createDatabaseManager());
+end;
+
 class function TFactory.createSignup: ISignup;
 begin
   Result := TSignup.create();
@@ -92,6 +100,16 @@ class function TFactory.createSupplier(const id: Integer;
 begin
   if (string.IsNullOrEmpty(username)) then raise Exception.Create('username cannot be null or empty');
   Result := TSupplier.Create(id, username);
+end;
+
+class function TFactory.createTimer: ITimer;
+begin
+  Result := TTimer.create();
+end;
+
+class function TFactory.createUserHabitHandler: IUserHabitHandler;
+begin
+   Result := TUserHabitHandler.create(createDatabaseManager());
 end;
 
 end.
