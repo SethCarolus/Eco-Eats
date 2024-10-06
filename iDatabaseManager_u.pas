@@ -1,7 +1,7 @@
 unit iDatabaseManager_u;
 
 interface
-  uses global_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
+  uses global_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u, Generics.Collections;
   type
     IDatabaseManager = interface
       function userExists(const username: string): Boolean;
@@ -13,6 +13,10 @@ interface
       function getAlpha(const username: string): IAlpha;
       function getBankCard(const id: Integer): IBankCard;
       function getBank(const id: Integer): IBank;
+      function getAllBanks() : TList<IBank>;
+      procedure insertCustomer(const customer : iCustomer; const password : string);
+      procedure insertBankCard(const bankCard : IBankCard);
+      function getBankCardWith(const accountNumber : string) : IBankCard;
     end;
 
 implementation

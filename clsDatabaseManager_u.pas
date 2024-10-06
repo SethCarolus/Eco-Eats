@@ -1,7 +1,8 @@
 unit clsDatabaseManager_u;
 
 interface
-  uses dmMain_u, global_u, iDatabaseManager_u, iCustomer_u, clsFactory_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
+  uses dmMain_u, global_u, iDatabaseManager_u, iCustomer_u, clsFactory_u, iAdmin_u,
+      iSupplier_u, iAlpha_u, iBankCard_u, iBank_u, Generics.Collections, DatabaseExceptions_u;
 
   type
     TDatabaseManager = class(TInterfacedObject, IDatabaseManager)
@@ -17,6 +18,10 @@ interface
         function getAlpha(const username : string) : IAlpha;
         function getBankCard(const id: Integer): IBankCard;
         function getBank(const id: Integer): IBank;
+        function getAllBanks() : TList<IBank>;
+        procedure insertCustomer(const customer : iCustomer; const password : string);
+        procedure insertBankCard(const bankCard : IBankCard);
+        function getBankCardWith(const accountNumber : string) : IBankCard;
     end;
 
 implementation
@@ -41,6 +46,28 @@ begin
       ExecSQL;
       Open;
       Result := TFactory.createAdmin(FieldByName('ID').AsInteger, FieldByName('username').AsString);
+    end;
+end;
+
+function TDatabaseManager.getAllBanks: TList<IBank>;
+begin
+  Result := TList<IBank>.Create();
+  With dmMain.qryBank do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblBank';
+      ExecSQL;
+      Open;
+
+
+      First;
+      while not (Eof) do
+        begin 
+          Result.Add(TFactory.createBank(FieldByName('id').AsInteger, FieldByName('short_name').AsString, 
+                                          FieldByName('long_name').AsString, 
+                                          FieldByName('phone_number').AsString));
+          Next;
+        end;
     end;
 end;
 
@@ -83,12 +110,37 @@ begin
       ExecSQL;
       Open;
       Result := TFactory.createBankCard(FieldByName('id').AsInteger,
+                                        FieldByName('account_number').AsString,
                                         FieldByName('name_on_card').AsString,
                                         FieldByName('expirey_date').AsDateTime,
                                         FieldByName('security_code').AsString,
                                         FieldByName('balance').AsCurrency,
                                         FieldByName('bank_id').AsInteger);
     end;
+end;
+
+function TDatabaseManager.getBankCardWith(const accountNumber: string): IBankCard;
+begin
+  if (string.IsNullOrWhiteSpace(accountNumber)) then
+    raise Exception.Create('accountNumber cannot be null or whitespace');
+
+  with dmMain.qryBankCard do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblBankCard WHERE account_number = ' +
+       QuotedStr(accountNumber);
+      ExecSQL;
+      Open;
+      Result := TFactory.createBankCard(FieldByName('id').AsInteger,
+                                        FieldByName('account_number').AsString,
+                                        FieldByName('name_on_card').AsString,
+                                        FieldByName('expirey_date').AsDateTime,
+                                        FieldByName('security_code').AsString,
+                                        FieldByName('balance').AsCurrency,
+                                        FieldByName('bank_id').AsInteger);
+    end;
+
+
 end;
 
 function TDatabaseManager.getCustomer(const username: string): ICustomer;
@@ -125,17 +177,15 @@ begin
       Result := TFactory.createSupplier(FieldByName('ID').AsInteger, FieldByName('username').AsString);
     end;
 end;
-
 function TDatabaseManager.getUserType(const username: string): TUserType;
 begin
   if (string.IsNullOrEmpty(username)) then
     raise Exception.Create('username cannot be null');
-    
+
   with dmMain.qryCustomer do
     begin
       Close;
       SQL.Text := 'SELECT * FROM tblCustomer WHERE username = ' + QuotedStr(username);
-      ExecSQL;
       Open;
 
       if (RecordCount <> 0) then
@@ -149,7 +199,6 @@ begin
     begin
       Close;
       SQL.Text := 'SELECT * FROM tblSupplier WHERE username = ' + QuotedStr(username);
-      ExecSQL;
       Open;
 
       if (RecordCount <> 0) then
@@ -164,7 +213,6 @@ begin
     begin
       Close;
       SQL.Text := 'SELECT * FROM tblAdmin WHERE username = ' + QuotedStr(username);
-      ExecSQL;
       Open;
 
       if (RecordCount <> 0) then
@@ -178,7 +226,6 @@ begin
     begin
       Close;
       SQL.Text := 'SELECT * FROM tblAlpha WHERE username = ' + QuotedStr(username);
-      ExecSQL;
       Open;
 
       if (RecordCount <> 0) then
@@ -191,6 +238,57 @@ begin
     Result := utInvalid;
 
 end;
+procedure TDatabaseManager.insertBankCard(const bankCard: IBankCard);
+begin
+  if (bankCard = nil) then
+    raise EArgumentNilException.Create('bankCard cannot be null');
+
+    with dmMain.qryBankCard do
+      begin
+        Close;
+        Sql.Text :=
+        '''
+            INSERT
+            INTO tblBankCard (account_number, name_on_card,expirey_date,security_code,balance, bank_id)
+            VALUES (
+        ''' + QuotedStr(bankCard.AccountNumber) + ',' + QuotedStr(bankCard.NameOnCard) + ',' +
+         '#' + DateToStr(bankCard.ExpireyDate) + '#' + ',' +
+          QuotedStr(bankCard.SecurityCode) + ',' +
+          bankCard.Balance.ToString + ',' + bankCard.BankId.ToString + ')';
+        ExecSQL;
+      end;
+end;
+
+procedure TDatabaseManager.insertCustomer(const customer: iCustomer;
+  const password : string);
+begin
+  if (customer = nil) then
+    raise EArgumentNilException.Create('customer cannot be null');
+
+  if (userExists(customer.Username)) then
+    raise EUserExistsException.Create('user already exists with this username');
+
+    with dmMain.tblCustomer do
+      begin
+        // Make sure the table is active
+        if not Active then Open;
+
+        // Start appending a new record
+        Append;
+
+        // Assign the values to the fields
+        FieldByName('username').AsString := customer.Username;
+        FieldByName('password').AsString := password;
+        FieldByName('first_name').AsString := customer.FirstName;
+        FieldByName('last_name').AsString := customer.LastName;
+        FieldByName('profile_picture').AsString := customer.ProfilePicture;
+        FieldByName('bank_card_id').AsInteger := customer.BankCardId;
+
+        // Post the new record to save it
+        Post;
+      end;
+end;
+
 function TDatabaseManager.passwordCorrect(const username,
   password: string): Boolean;
 begin
@@ -215,7 +313,6 @@ begin
           begin
             Close;
             SQL.Text := 'SELECT * FROM tblCustomer WHERE username = ' + QuotedStr(username);
-            ExecSQL;
             Open;
             Result := FieldByName('password').AsString = password;
             Exit;
@@ -227,7 +324,6 @@ begin
           begin
             Close;
             SQL.Text := 'SELECT * FROM tblSupplier WHERE username = ' + QuotedStr(username);
-            ExecSQL;
             Open;
             Result := FieldByName('password').AsString = password;
             Exit;
@@ -239,7 +335,6 @@ begin
           begin
             Close;
             SQL.Text := 'SELECT * FROM tblAdmin WHERE username = ' + QuotedStr(username);
-            ExecSQL;
             Open;
             Result := FieldByName('password').AsString = password;
             Exit;
@@ -251,7 +346,6 @@ begin
           begin
             Close;
             SQL.Text := 'SELECT * FROM tblAlpha WHERE username = ' + QuotedStr(username);
-            ExecSQL;
             Open;
             Result := FieldByName('password').AsString = password;
             Exit;

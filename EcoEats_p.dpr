@@ -25,7 +25,10 @@ uses
   clsBankCard_u in 'clsBankCard_u.pas',
   iBankCard_u in 'iBankCard_u.pas',
   iBank_u in 'iBank_u.pas',
-  clsBank_u in 'clsBank_u.pas';
+  clsBank_u in 'clsBank_u.pas',
+  clsSignup in 'clsSignup.pas',
+  iSignup_u in 'iSignup_u.pas',
+  DatabaseExceptions_u in 'DatabaseExceptions_u.pas';
 
 {$R *.res}
 

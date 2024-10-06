@@ -7,6 +7,9 @@ interface
       function getId(): Integer;
       procedure setId(const id: Integer);
 
+      function getAccountNumber: string;
+      procedure setAccountNumber(const accountNumber: string);
+
       function getNameOnCard(): string;
       procedure setNameOnCard(const nameOnCard: string);
 
@@ -23,6 +26,7 @@ interface
       procedure setBankId(const id: Integer);
 
       property Id: Integer read getId write setId;
+      property AccountNumber: string read getAccountNumber write setAccountNumber;
       property NameOnCard: string read getNameOnCard write setNameOnCard;
       property SecurityCode: string read getSecurityCode write setSecurityCode;
       property Balance: Double read getBalance write setBalance;

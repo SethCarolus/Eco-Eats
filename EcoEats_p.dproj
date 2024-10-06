@@ -155,6 +155,9 @@
         <DCCReference Include="iBankCard_u.pas"/>
         <DCCReference Include="iBank_u.pas"/>
         <DCCReference Include="clsBank_u.pas"/>
+        <DCCReference Include="clsSignup.pas"/>
+        <DCCReference Include="iSignup_u.pas"/>
+        <DCCReference Include="DatabaseExceptions_u.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

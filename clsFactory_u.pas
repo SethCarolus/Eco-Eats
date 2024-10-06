@@ -1,18 +1,21 @@
 unit clsFactory_u;
 
 interface
-  uses iLogin_u, iDatabaseManager_u, iCustomer_u, iAdmin_u, iSupplier_u, iAlpha_u, iBankCard_u, iBank_u;
+  uses iLogin_u, iDatabaseManager_u, iCustomer_u, iAdmin_u, iSupplier_u,
+    iAlpha_u, iBankCard_u, iBank_u, iSignup_u;
   type
     TFactory = class
 
-    class function createLogin() : ILogin;
+    class function createLogin(): ILogin;
+    class function createSignup(): ISignup;
     class function createDatabaseManager : IDatabaseManager;
     class function createCustomer(const id: Integer; const username : string; const firstName : string;
                                   const lastName : string; const profilePicture : string; const bankCardId : Integer) : iCustomer;
     class function createAdmin(const id : Integer; const username : string) : iAdmin;
     class function createSupplier(const id : Integer; const username : string) : iSupplier;
     class function createAlpha(const id : Integer; const username : string) : iAlpha;
-    class function createBankCard(const id: integer; const nameOnCard: string;
+    class function createBankCard(const id: integer; const accountNumber : string;
+                            const nameOnCard: string;
                             const expireyDate: TDateTime;
                             const securityCode: string; const balance: Double;
                             const bankId: Integer): IBankCard;
@@ -25,7 +28,7 @@ interface
 implementation
   uses SysUtils, clsDatabaseManager_u, clsMockLogin_u , clsLogin_u,
   clsCustomer_u, clsAdmin_u, clsSupplier_u, clsAlpha_u, clsBankCard_u,
-  clsBank_u;
+  clsBank_u, clsSignup;
 
 { Factory }
 
@@ -50,11 +53,12 @@ begin
 end;
 
 class function TFactory.createBankCard(const id: integer;
+  const accountNumber : string;
   const nameOnCard: string; const expireyDate: TDateTime;
   const securityCode: string; const balance: Double;
   const bankId: Integer): IBankCard;
 begin
-    Result := TBankCard.Create(id, nameOnCard, expireyDate ,securityCode, balance, bankId);
+    Result := TBankCard.Create(id, accountNumber ,nameOnCard, expireyDate ,securityCode, balance, bankId);
 end;
 
 class function TFactory.createCustomer(const id: Integer;const username, firstName,
@@ -76,6 +80,11 @@ end;
 class function TFactory.createLogin: ILogin;
 begin
     Result := TLogin.create(createDatabaseManager());
+end;
+
+class function TFactory.createSignup: ISignup;
+begin
+  Result := TSignup.create();
 end;
 
 class function TFactory.createSupplier(const id: Integer;

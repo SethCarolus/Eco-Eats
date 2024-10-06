@@ -110,7 +110,7 @@ end;
 procedure TMockLogin.setupCustomer(const username: string);
 begin
    currentCustomer := TFactory.createCustomer(0, 'username', 'user', 'name', 'ProfilePicture.jpeg', 0);
-   currentBankCard := TFactory.createBankCard(0, 'USERNAME', Now,'123', 39_000, 0);
+   currentBankCard := TFactory.createBankCard(0, 'USERNAME', '12345678' ,Now,'123', 39_000, 0);
    currentBank := TFactory.createBank(0, 'FB', 'Fake Bank', '0722634804');
 end;
 
