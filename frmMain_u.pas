@@ -3,7 +3,7 @@ unit frmMain_u;
 interface
 
 uses
-  iLogin_u, iSignup_u,
+  iLogin_u, iSignup_u, iProduct_u,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.WinXPanels,
   Vcl.StdCtrls, Vcl.Mask, Vcl.Imaging.pngimage, jpeg, Vcl.Buttons,
@@ -43,7 +43,7 @@ type
     edtCustomerViewProfileBankCardBalance: TEdit;
     edtCustomerViewProfileBankLongName: TEdit;
     Button1: TButton;
-    Button2: TButton;
+    btnCustomerViewProfileStore: TButton;
     Label9: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -83,6 +83,31 @@ type
     redViewHabits: TRichEdit;
     Panel2: TPanel;
     btnViewHabitsBack: TBitBtn;
+    cStore: TCard;
+    GridPanel1: TGridPanel;
+    StackPanel6: TStackPanel;
+    Panel3: TPanel;
+    lstStoreProducts: TListBox;
+    btnStoreAddToCart: TButton;
+    StackPanel8: TStackPanel;
+    imgStoreProduct: TImage;
+    memStoreProductDescription: TMemo;
+    pnlStoreProductSuplierName: TPanel;
+    Panel4: TPanel;
+    spdStoreProductQuantity: TSpinEdit;
+    Panel5: TPanel;
+    pnlStoreProductPrice: TPanel;
+    btnStoreBack: TBitBtn;
+    StackPanel9: TStackPanel;
+    lstStoreCart: TListBox;
+    Panel6: TPanel;
+    btnStorePurchase: TButton;
+    GridPanel2: TGridPanel;
+    btnStoreClear: TButton;
+    btnStoreRemove: TButton;
+    Panel7: TPanel;
+    pnlStoreCartTotal: TPanel;
+    pnlStockOfProduct: TPanel;
     procedure btnLoginLoginClick(Sender: TObject);
     procedure cCustomerViewProfileEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -117,6 +142,15 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure redViewHabitsMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure btnCustomerViewProfileStoreClick(Sender: TObject);
+    procedure btnStoreBackClick(Sender: TObject);
+    procedure cStoreEnter(Sender: TObject);
+    procedure lstStoreProductsClick(Sender: TObject);
+    procedure btnStoreAddToCartClick(Sender: TObject);
+    procedure btnStoreClearClick(Sender: TObject);
+    procedure btnStoreRemoveClick(Sender: TObject);
+    procedure lstStoreCartClick(Sender: TObject);
+    procedure btnStorePurchaseClick(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
@@ -124,10 +158,29 @@ type
     procedure UpdateCustomerSignupComponents();
     procedure UpdateHabits();
     procedure SaveProfilePicture(const username: string);
+    procedure LogOut();
+    procedure DisplayCart();
+    procedure DisplayProductInStore();
+    procedure UpdateStoreComponents();
+
+    // Current Card Property
     function getCurrentCard: TCard;
     procedure setCurrentCard(const Value: TCard);
     property CurrentCard: TCard read getCurrentCard write setCurrentCard;
-    procedure LogOut();
+
+    // Selected Product In Store Property
+    function getSelectedProductInStore(): IProduct;
+    procedure setSelectedProductInStore(const product: IProduct);
+    property SelectedProductInStore: IProduct
+            read getSelectedProductInStore
+            write setSelectedProductInStore;
+
+    // Selected Product In Cart Property
+    function getSelectedProductInCart(): IProduct;
+    procedure setSelectedProductInCart(const product: IProduct);
+    property SelectedProductInCart: IProduct
+          read getSelectedProductInCart
+          write setSelectedProductInCart;
   public
     { Public declarations }
   end;
@@ -136,11 +189,14 @@ var
   frmMain: TfrmMain;
 
 implementation
-  uses clsFactory_u, global_u, users_u, iBankCard_u, iBank_u,
-    DatabaseExceptions_u, DateUtils, iLogout_u, IUserHabitHandler_u;
-  var iSelectedIndexofBankOnSignupPage : Integer;
-  var sProfilePictureSignupPage : string;
-  var _currentCard : TCard;
+  uses clsFactory_u, global_u, users_u,
+    DatabaseExceptions_u, DateUtils, storeExceptions_u;
+
+  var iSelectedIndexofBankOnSignupPage: Integer;
+  var sProfilePictureSignupPage: string;
+  var _currentCard: TCard;
+  var _selectedProductInStore: IProduct = nil;
+  var _selectedProductInCart: IProduct = nil;
 
 {$R *.dfm}
 
@@ -276,10 +332,88 @@ begin
   ShowMessage('Sign Up Completed');
 end;
 
+procedure TfrmMain.btnStoreAddToCartClick(Sender: TObject);
+begin
+  if (lstStoreProducts.ItemIndex = -1) then
+    begin
+      ShowMessage('Please select a product!');
+      Exit;
+    end;
+
+  for var i := 0 to spdStoreProductQuantity.Value - 1 do
+    begin
+      Cart.add(SelectedProductInStore);
+    end;
+  UpdateStoreComponents;
+
+end;
+
+procedure TfrmMain.btnStoreBackClick(Sender: TObject);
+begin
+  lstStoreCart.Clear;
+  CurrentCard := cCustomerViewProfile;
+end;
+
+procedure TfrmMain.btnStoreClearClick(Sender: TObject);
+begin
+  if (Cart.isEmpty()) then
+    begin
+      ShowMessage('Cart is Empty!');
+      SelectedProductInCart := nil;
+      Exit;
+    end;
+
+  Cart.clear();
+  DisplayCart();
+end;
+
+procedure TfrmMain.btnStorePurchaseClick(Sender: TObject);
+begin
+  var paymentHandler := TFactory.createPaymentHandler();
+  try
+    paymentHandler.makePayment(currentBankCard, Cart);
+  except
+    on ECustomerInsuffientFunds do
+      begin
+        ShowMessage('You have Insuffient Funds');
+        Exit;
+      end;
+    on EArgumentNilException do
+      begin
+        ShowMessage('Internal Program Error!' + #13 + 'If this continues, lodge a complaint or contact the developers.');
+        Exit;
+      end;
+  end;
+  ShowMessage('Payment was successful!');
+  Cart.clear;
+  UpdateStoreComponents();
+  DisplayProductInStore()
+
+end;
+
+procedure TfrmMain.btnStoreRemoveClick(Sender: TObject);
+begin
+  Cart.remove(SelectedProductInCart);
+
+  if (Cart.isEmpty()) then
+    begin
+      if (SelectedProductInCart = nil) then
+        ShowMessage('Cart is Empty!');
+      SelectedProductInCart := nil;
+    end;
+
+  UpdateStoreComponents();
+end;
+
 procedure TfrmMain.btnViewHabitsBackClick(Sender: TObject);
 begin
   if (currentUserType = utCustomer) then
     CurrentCard := cCustomerViewProfile;
+end;
+
+procedure TfrmMain.btnCustomerViewProfileStoreClick(Sender: TObject);
+begin
+  CurrentCard := cStore;
 end;
 
 procedure TfrmMain.cCustomerSignupEnter(Sender: TObject);
@@ -347,9 +481,73 @@ begin
   edtLoginPassword.Clear;
 end;
 
+procedure TfrmMain.cStoreEnter(Sender: TObject);
+begin
+  var productHandler := TFactory.createProductHandler();
+  Products := productHandler.getAllProducts();
+
+  lstStoreProducts.Clear;
+
+  for var p in Products do
+    begin
+      lstStoreProducts.Items.Add(p.Name);
+      imgStoreProduct.Picture.LoadFromFile(GetCurrentDir + '/ProductPictures/' + p.Picture)
+    end;
+
+  lstStoreProducts.ItemIndex := 0;
+  SelectedProductInStore := Products[0];
+  Cart := TFactory.createCart();
+
+  UpdateStoreComponents;
+end;
+
 procedure TfrmMain.cViewHabitsEnter(Sender: TObject);
 begin
   btnViewHabitsBack.SetFocus();
+end;
+
+procedure TfrmMain.DisplayCart;
+begin
+  lstStoreCart.Clear;
+
+  if Cart.isEmpty then
+  begin
+    pnlStoreCartTotal.Caption := '';
+    Exit;
+  end;
+
+  for var ap in Products do
+    begin
+      var iCount := 0;
+      for var p in Cart.Products do
+        begin
+          if (p.Id = ap.Id) then
+            Inc(iCount);
+        end;
+
+      if (iCount <= 0) then
+        Continue;
+      lstStoreCart.Items.Add(ap.Name + ' * ' + iCount.ToString)
+    end;
+
+  pnlStoreCartTotal.Caption := Cart.getTotal().ToString(ffCurrency, 10, 2);
+
+end;
+
+procedure TfrmMain.DisplayProductInStore;
+begin
+  var supplierHandler := TFactory.createSupplierHandler();
+  var supplierOfCurrentProduct := supplierHandler.getSupplierBy(SelectedProductInStore.SupplierId);
+
+  imgStoreProduct.Picture.LoadFromFile(GetCurrentDir + '/ProductPictures/' + SelectedProductInStore.Picture);
+  memStoreProductDescription.Clear;
+  memStoreProductDescription.Lines.Add(SelectedProductInStore.Description);
+  pnlStoreProductSuplierName.Caption := supplierOfCurrentProduct.DisplayName;
+  pnlStockOfProduct.Caption := SelectedProductInStore.Quantity.ToString() + ' Items in Stock';
+  pnlStoreProductPrice.Caption := SelectedProductInStore.Price.ToString(ffCurrency, 10, 2);
+
+  spdStoreProductQuantity.Value := 1;
+  spdStoreProductQuantity.MaxValue := SelectedProductInStore.Quantity;
 end;
 
 procedure TfrmMain.dtpCustomerSignupExpireyDateChange(Sender: TObject);
@@ -430,6 +628,27 @@ begin
   Result := _currentCard;
 end;
 
+procedure TfrmMain.setSelectedProductInCart(const product: IProduct);
+begin
+  _selectedProductInCart := product;
+end;
+
+procedure TfrmMain.setSelectedProductInStore(const product: IProduct);
+begin
+  _selectedProductInStore := product;
+  DisplayProductInStore();
+end;
+
+function TfrmMain.getSelectedProductInCart: IProduct;
+begin
+  Result := _selectedProductInCart;
+end;
+
+function TfrmMain.getSelectedProductInStore: IProduct;
+begin
+  Result := _selectedProductInStore;
+end;
+
 procedure TfrmMain.LogOut;
 begin
   if (Timer = nil) then
@@ -456,7 +675,7 @@ begin
       end;
   end;
 
-  var logOut : ILogout := TFactory.createLogout;
+  var logOut := TFactory.createLogout;
 
   logOut.LogTimeSpent(username, Ceil(Timer.elapsedSeconds / 60));
 end;
@@ -468,6 +687,38 @@ begin
       Exit;
   iSelectedIndexofBankOnSignupPage := lstCustomerSignupBanks.ItemIndex;
   UpdateCustomerSignupComponents();
+end;
+
+procedure TfrmMain.lstStoreCartClick(Sender: TObject);
+begin
+  var itemIndex := lstStoreCart.ItemIndex;
+
+  if (itemIndex = -1 ) then
+    begin
+      SelectedProductInCart := nil;
+      UpdateStoreComponents();
+      Exit;
+    end;
+   
+
+  var sProductLine := lstStoreCart.Items[lstStoreCart.ItemIndex];
+  var iPos := Pos('*', sProductLine);
+  var  sProductName := Copy(sProductLine, 0, iPos - 1 ).Trim;
+
+  for var p in Cart.Products do
+    begin
+      if (p.Name = sProductName) then
+        begin
+          SelectedProductInCart := p;
+          Break;
+        end;
+    end;
+  UpdateStoreComponents();
+end;
+
+procedure TfrmMain.lstStoreProductsClick(Sender: TObject);
+begin
+  SelectedProductInStore := Products[lstStoreProducts.ItemIndex];
 end;
 
 procedure TfrmMain.NavigateToFirstPage(const username: string; const login : ILogin);
@@ -618,6 +869,41 @@ begin
       Exit;
     end;
   btnLoginLogin.Enabled := True;
+end;
+
+procedure TfrmMain.UpdateStoreComponents;
+begin
+  if (SelectedProductInStore = nil) then
+    begin
+      btnStoreAddToCart.Enabled := False;
+    end
+  else
+    begin
+      btnStoreAddToCart.Enabled := True;
+    end;
+    
+  if (Cart.isEmpty) then
+    begin
+      btnStorePurchase.Enabled := False;
+      btnStoreClear.Enabled := False;
+    end
+  else
+    begin
+      btnStorePurchase.Enabled := True;
+      btnStoreClear.Enabled := True;
+    end;
+
+  if (SelectedProductInCart = nil) then
+    begin
+      btnStoreRemove.Enabled := False;
+    end
+  else
+    begin
+      btnStoreRemove.Enabled := True;
+    end;
+
+  DisplayCart();
+
 end;
 
 end.

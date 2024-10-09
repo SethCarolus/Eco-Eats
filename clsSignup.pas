@@ -7,7 +7,7 @@ interface
     TSignup = class(TInterfacedObject, ISignup)
     fDatabaseManager : IDatabaseManager;
     public
-      constructor create();
+      constructor create(const databaseManager : IDatabaseManager);
       function getAllBanks() :  TList<IBank>;
       procedure insertCustomer(const customer : iCustomer; const password : string);
       procedure insertBankCard(const bankCard : IBankCard);
@@ -16,13 +16,11 @@ interface
 
 implementation
 
-uses clsFactory_u;
-
 { TSignup }
 
-constructor TSignup.create;
+constructor TSignup.create(const databaseManager : IDatabaseManager);
 begin
-  fDatabaseManager := TFactory.createDatabaseManager();
+  fDatabaseManager := databaseManager;
 end;
 
 function TSignup.getAllBanks: TList<IBank>;

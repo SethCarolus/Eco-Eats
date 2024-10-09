@@ -164,6 +164,17 @@
         <DCCReference Include="clsLogout_u.pas"/>
         <DCCReference Include="IUserHabitHandler_u.pas"/>
         <DCCReference Include="clsUserHabitHandler_u.pas"/>
+        <DCCReference Include="clsProduct_u.pas"/>
+        <DCCReference Include="IProduct_u.pas"/>
+        <DCCReference Include="iProductHandler_u.pas"/>
+        <DCCReference Include="clsProductHandler_u.pas"/>
+        <DCCReference Include="clsSupplierHandler_u.pas"/>
+        <DCCReference Include="iSupplierHandler_u.pas"/>
+        <DCCReference Include="iCart_u.pas"/>
+        <DCCReference Include="clsCart_u.pas"/>
+        <DCCReference Include="iPaymentHandler_u.pas"/>
+        <DCCReference Include="clsPaymentHandler_u.pas"/>
+        <DCCReference Include="storeExceptions_u.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

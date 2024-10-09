@@ -4,7 +4,6 @@ interface
   uses ITimer_u;
   type
     TTimer = class(TInterfacedObject, ITimer)
-
       fStart : TDateTime;
        public
           constructor create();
@@ -13,7 +12,7 @@ interface
 
 implementation
 
-uses SysUtils, DateUtils;
+uses SysUtils, DateUtils, Math;
 
 { TTImer }
 
@@ -21,7 +20,6 @@ constructor TTimer.create;
 begin
    fStart := Now;
 end;
-
 function TTimer.elapsedSeconds: UInt64;
 begin
   Result := SecondsBetween(fStart, Now);

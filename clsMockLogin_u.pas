@@ -72,7 +72,7 @@ begin
   if (string.IsNullOrEmpty(username)) then
     raise Exception.Create('username cannot be null or empty');
 
-  Result := TFactory.createSupplier(-1 ,username);
+  Result := TFactory.createSupplier(-1 ,username, 'A display name');
 end;
 
 function TMockLogin.getUserType(const username: string): TUserType;

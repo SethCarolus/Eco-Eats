@@ -18,8 +18,8 @@ object frmMain: TfrmMain
     Top = 0
     Width = 1200
     Height = 800
-    Align = alTop
-    ActiveCard = cViewHabits
+    Align = alClient
+    ActiveCard = cStore
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -493,13 +493,14 @@ object frmMain: TfrmMain
         Caption = 'Edit Profile'
         TabOrder = 4
       end
-      object Button2: TButton
+      object btnCustomerViewProfileStore: TButton
         Left = 933
         Top = 663
         Width = 249
         Height = 47
         Caption = 'Store'
         TabOrder = 5
+        OnClick = btnCustomerViewProfileStoreClick
       end
       object btnCustomerViewHabits: TButton
         Left = 669
@@ -909,6 +910,372 @@ object frmMain: TfrmMain
         NumGlyphs = 2
         TabOrder = 2
         OnClick = btnViewHabitsBackClick
+      end
+    end
+    object cStore: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 4
+      TabOrder = 4
+      OnEnter = cStoreEnter
+      object GridPanel1: TGridPanel
+        Left = 8
+        Top = 16
+        Width = 550
+        Height = 700
+        ColumnCollection = <
+          item
+            Value = 50.000000000000000000
+          end
+          item
+            Value = 50.000000000000000000
+          end>
+        ControlCollection = <
+          item
+            Column = 0
+            Control = StackPanel6
+            Row = 0
+          end
+          item
+            Column = 1
+            Control = StackPanel8
+            Row = 0
+          end>
+        RowCollection = <
+          item
+            Value = 100.000000000000000000
+          end>
+        TabOrder = 0
+        object StackPanel6: TStackPanel
+          Left = 1
+          Top = 1
+          Width = 274
+          Height = 698
+          Align = alClient
+          AutoSize = True
+          BevelOuter = bvNone
+          ControlCollection = <
+            item
+              Control = Panel3
+              VerticalPositioning = spvpFill
+            end
+            item
+              Control = lstStoreProducts
+              HorizontalPositioning = sphpFill
+              VerticalPositioning = spvpFill
+            end
+            item
+              Control = btnStoreAddToCart
+              HorizontalPositioning = sphpFill
+            end>
+          HorizontalPositioning = sphpFill
+          Padding.Left = 20
+          Padding.Top = 20
+          Padding.Right = 20
+          Padding.Bottom = 20
+          Spacing = 10
+          TabOrder = 0
+          VerticalPositioning = spvpFill
+          object Panel3: TPanel
+            Left = 20
+            Top = 20
+            Width = 234
+            Height = 41
+            BevelOuter = bvNone
+            Caption = 'Products'
+            TabOrder = 1
+          end
+          object lstStoreProducts: TListBox
+            Left = 20
+            Top = 71
+            Width = 234
+            Height = 554
+            IntegralHeight = True
+            ItemHeight = 25
+            TabOrder = 0
+            OnClick = lstStoreProductsClick
+          end
+          object btnStoreAddToCart: TButton
+            Left = 20
+            Top = 635
+            Width = 234
+            Height = 50
+            Caption = 'Add To Cart'
+            TabOrder = 2
+            OnClick = btnStoreAddToCartClick
+          end
+        end
+        object StackPanel8: TStackPanel
+          Left = 275
+          Top = 1
+          Width = 274
+          Height = 698
+          Align = alClient
+          BevelOuter = bvNone
+          ControlCollection = <
+            item
+              Control = imgStoreProduct
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = memStoreProductDescription
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = pnlStoreProductSuplierName
+            end
+            item
+              Control = pnlStockOfProduct
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = Panel5
+            end
+            item
+              Control = pnlStoreProductPrice
+            end
+            item
+              Control = Panel4
+            end
+            item
+              Control = spdStoreProductQuantity
+              HorizontalPositioning = sphpFill
+            end>
+          HorizontalPositioning = sphpCenter
+          Padding.Left = 20
+          Padding.Top = 20
+          Padding.Right = 20
+          Padding.Bottom = 20
+          Spacing = 10
+          TabOrder = 1
+          object imgStoreProduct: TImage
+            Left = 37
+            Top = 20
+            Width = 200
+            Height = 200
+            Stretch = True
+          end
+          object memStoreProductDescription: TMemo
+            Left = 20
+            Top = 230
+            Width = 234
+            Height = 99
+            ReadOnly = True
+            TabOrder = 0
+          end
+          object pnlStoreProductSuplierName: TPanel
+            Left = 11
+            Top = 339
+            Width = 252
+            Height = 45
+            BevelOuter = bvNone
+            TabOrder = 1
+          end
+          object pnlStockOfProduct: TPanel
+            Left = 20
+            Top = 394
+            Width = 234
+            Height = 41
+            BevelOuter = bvNone
+            TabOrder = 6
+          end
+          object Panel5: TPanel
+            Left = 11
+            Top = 445
+            Width = 252
+            Height = 41
+            BevelOuter = bvNone
+            Caption = 'Price'
+            TabOrder = 4
+          end
+          object pnlStoreProductPrice: TPanel
+            Left = 11
+            Top = 496
+            Width = 252
+            Height = 41
+            BevelOuter = bvNone
+            TabOrder = 5
+          end
+          object Panel4: TPanel
+            Left = 11
+            Top = 547
+            Width = 252
+            Height = 41
+            BevelOuter = bvNone
+            Caption = 'Quantity'
+            TabOrder = 2
+          end
+          object spdStoreProductQuantity: TSpinEdit
+            Left = 20
+            Top = 598
+            Width = 234
+            Height = 35
+            MaxValue = 50
+            MinValue = 1
+            TabOrder = 3
+            Value = 1
+          end
+        end
+      end
+      object btnStoreBack: TBitBtn
+        Left = 8
+        Top = 734
+        Width = 150
+        Height = 50
+        Caption = '&Back'
+        Kind = bkIgnore
+        NumGlyphs = 2
+        TabOrder = 1
+        OnClick = btnStoreBackClick
+      end
+      object StackPanel9: TStackPanel
+        Left = 608
+        Top = 16
+        Width = 574
+        Height = 699
+        ControlCollection = <
+          item
+            Control = Panel6
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = lstStoreCart
+            HorizontalPositioning = sphpFill
+            VerticalPositioning = spvpFill
+          end
+          item
+            Control = Panel7
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = pnlStoreCartTotal
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = GridPanel2
+            HorizontalPositioning = sphpFill
+            VerticalPositioning = spvpFill
+          end
+          item
+            Control = btnStorePurchase
+            HorizontalPositioning = sphpFill
+          end>
+        Padding.Left = 20
+        Padding.Top = 20
+        Padding.Right = 20
+        Padding.Bottom = 20
+        Spacing = 15
+        TabOrder = 2
+        object Panel6: TPanel
+          Left = 170
+          Top = 21
+          Width = 234
+          Height = 41
+          BevelOuter = bvNone
+          Caption = 'Cart'
+          TabOrder = 1
+        end
+        object lstStoreCart: TListBox
+          Left = 21
+          Top = 77
+          Width = 532
+          Height = 354
+          Align = alClient
+          IntegralHeight = True
+          ItemHeight = 25
+          TabOrder = 0
+          OnClick = lstStoreCartClick
+        end
+        object Panel7: TPanel
+          Left = 161
+          Top = 446
+          Width = 252
+          Height = 29
+          BevelOuter = bvNone
+          Caption = 'Price'
+          TabOrder = 4
+        end
+        object pnlStoreCartTotal: TPanel
+          Left = 161
+          Top = 490
+          Width = 252
+          Height = 36
+          BevelOuter = bvNone
+          TabOrder = 5
+        end
+        object GridPanel2: TGridPanel
+          Left = 21
+          Top = 541
+          Width = 532
+          Height = 60
+          Align = alClient
+          BevelOuter = bvNone
+          ColumnCollection = <
+            item
+              Value = 50.000000000000000000
+            end
+            item
+              Value = 50.000000000000000000
+            end>
+          ControlCollection = <
+            item
+              Column = 0
+              Control = btnStoreClear
+              Row = 0
+            end
+            item
+              Column = 1
+              Control = btnStoreRemove
+              Row = 0
+            end>
+          RowCollection = <
+            item
+              Value = 100.000000000000000000
+            end>
+          TabOrder = 3
+          DesignSize = (
+            532
+            60)
+          object btnStoreClear: TButton
+            Left = 5
+            Top = 0
+            Width = 255
+            Height = 60
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 5
+            Anchors = []
+            Caption = 'Clear'
+            TabOrder = 0
+            OnClick = btnStoreClearClick
+          end
+          object btnStoreRemove: TButton
+            Left = 273
+            Top = 0
+            Width = 252
+            Height = 61
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 5
+            Anchors = []
+            Caption = 'Remove'
+            TabOrder = 1
+            OnClick = btnStoreRemoveClick
+          end
+        end
+        object btnStorePurchase: TButton
+          Left = 21
+          Top = 616
+          Width = 532
+          Height = 50
+          Caption = 'Purchase'
+          TabOrder = 2
+          OnClick = btnStorePurchaseClick
+        end
       end
     end
   end

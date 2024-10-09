@@ -2,7 +2,8 @@ unit clsDatabaseManager_u;
 
 interface
   uses dmMain_u, global_u, iDatabaseManager_u, iCustomer_u, clsFactory_u, iAdmin_u,
-      iSupplier_u, iAlpha_u, iBankCard_u, iBank_u, Generics.Collections, DatabaseExceptions_u;
+      iSupplier_u, iAlpha_u, iBankCard_u, iBank_u, Generics.Collections,
+      DatabaseExceptions_u, IProduct_u;
 
   type
     TDatabaseManager = class(TInterfacedObject, IDatabaseManager)
@@ -24,6 +25,11 @@ interface
         function getBankCardWith(const accountNumber : string) : IBankCard;
         procedure insertTimeSpentOnApplicatiom(const username: string; elapsedMinutes: Integer);
         function getTimeSpentOnAplicationFor(const username : string) : TList<UInt64>;
+        function getAllProducts(): TList<IProduct>;
+        function getSupplierBy(const id: Integer): iSupplier;
+        procedure updateProduct(const product: IProduct);
+        procedure updateBankCard(const bankCard: IBankCard);
+
     end;
 
 implementation
@@ -58,18 +64,44 @@ begin
     begin
       Close;
       Sql.Text := 'SELECT * FROM tblBank';
-      ExecSQL;
       Open;
 
-
       First;
-      while not (Eof) do
+      while not Eof do
         begin 
-          Result.Add(TFactory.createBank(FieldByName('id').AsInteger, FieldByName('short_name').AsString, 
+          Result.Add(TFactory.createBank(FieldByName('id').AsInteger, FieldByName('short_name').AsString,
                                           FieldByName('long_name').AsString, 
                                           FieldByName('phone_number').AsString));
           Next;
         end;
+    end;
+end;
+
+function TDatabaseManager.getAllProducts(): TList<IProduct>;
+begin
+  With dmMain.qryProduct do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblProduct';
+      Open;
+
+      Result := TList<IProduct>.Create();
+      First;
+      while not Eof do
+        begin
+          var product :=  TFactory.createProduct(
+                                            FieldByName('id').AsInteger,
+                                            FieldByName('product_name').AsString,
+                                            FieldByName('description').AsString,
+                                            FieldByName('price').AsFloat,
+                                            FieldByName('quantity').AsInteger,
+                                            FieldByName('picture').AsString,
+                                            FieldByName('supplier_id').AsInteger);
+          Result.Add(product);
+          product.SupplierId;
+          Next;
+        end;
+
     end;
 end;
 
@@ -176,9 +208,24 @@ begin
       Sql.Text := 'SELECT * FROM tblSupplier WHERE username = ' + QuotedStr(username);
       ExecSQL;
       Open;
-      Result := TFactory.createSupplier(FieldByName('ID').AsInteger, FieldByName('username').AsString);
+      Result := TFactory.createSupplier(FieldByName('ID').AsInteger,
+                FieldByName('username').AsString,
+                FieldByName('display_name').AsString);
     end;
 end;
+function TDatabaseManager.getSupplierBy(const id: Integer): iSupplier;
+begin
+  with dmMain.qrySupplier do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblSupplier WHERE id = ' + id.ToString();
+      Open;
+      Result := TFactory.createSupplier(FieldByName('id').AsInteger,
+      FieldByName('username').AsString,
+      FieldByName('display_name').AsString);
+    end;
+end;
+
 function TDatabaseManager.getTimeSpentOnAplicationFor(
   const username: string): TList<UInt64>;
 begin
@@ -390,6 +437,57 @@ begin
       end;
   end;
   Result := False;
+end;
+
+procedure TDatabaseManager.updateBankCard(const bankCard: IBankCard);
+begin
+  with dmMain.tblBankCard do
+    begin
+      Open;
+      First;
+      while not Eof do
+        begin
+          if (FieldByName('id').AsInteger = bankCard.Id) then
+            begin
+              Edit;
+              FieldByName('name_on_card').AsString := bankCard.NameOnCard;
+              FieldByName('account_number').AsString := bankCard.AccountNumber;
+              FieldByName('expirey_date').AsDateTime := bankCard.ExpireyDate;
+              FieldByName('security_code').AsString := bankCard.SecurityCode;
+              FieldByName('balance').AsCurrency := bankCard.Balance;
+              FieldByName('bank_id').AsInteger := bankCard.BankId;
+              Post;
+              Break;
+            end;
+          Next;
+        end;
+        Close;
+    end;
+end;
+
+procedure TDatabaseManager.updateProduct(const product: IProduct);
+begin
+  with dmMain.tblProduct do
+    begin
+      Open;
+      First;
+      while not Eof do
+        begin
+          if (FieldByName('id').AsInteger = product.Id) then
+            begin
+              Edit;
+              FieldByName('product_name').AsString := Product.Name;
+              FieldByName('description').AsString := Product.Description;
+              FieldByName('price').AsCurrency := product.Price;
+              FieldByName('quantity').AsInteger := product.Quantity;
+              FieldByName('picture').AsString := product.Picture;
+              Post;
+              Break;
+            end;
+            Next;
+        end;
+        Close;
+    end;
 end;
 
 function TDatabaseManager.userExists(const username: string): Boolean;

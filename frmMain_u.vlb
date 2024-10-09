@@ -55,9 +55,6 @@ Coordinates=80,214,60,58
 [edtCustomerViewProfileBankLongName]
 Coordinates=537,146,244,58
 
-[Button2]
-Coordinates=307,622,59,58
-
 [btnCustomerViewProfileBack]
 Coordinates=10,486,181,58
 
@@ -166,4 +163,7 @@ Coordinates=837,282,56,58
 
 [imgCustomerSignup]
 Coordinates=574,282,57,58
+
+[btnCustomerViewProfileStore]
+Coordinates=307,622,59,58
 

@@ -34,7 +34,18 @@ uses
   iLogout_u in 'iLogout_u.pas',
   clsLogout_u in 'clsLogout_u.pas',
   IUserHabitHandler_u in 'IUserHabitHandler_u.pas',
-  clsUserHabitHandler_u in 'clsUserHabitHandler_u.pas';
+  clsUserHabitHandler_u in 'clsUserHabitHandler_u.pas',
+  clsProduct_u in 'clsProduct_u.pas',
+  IProduct_u in 'IProduct_u.pas',
+  iProductHandler_u in 'iProductHandler_u.pas',
+  clsProductHandler_u in 'clsProductHandler_u.pas',
+  clsSupplierHandler_u in 'clsSupplierHandler_u.pas',
+  iSupplierHandler_u in 'iSupplierHandler_u.pas',
+  iCart_u in 'iCart_u.pas',
+  clsCart_u in 'clsCart_u.pas',
+  iPaymentHandler_u in 'iPaymentHandler_u.pas',
+  clsPaymentHandler_u in 'clsPaymentHandler_u.pas',
+  storeExceptions_u in 'storeExceptions_u.pas';
 
 {$R *.res}
 
