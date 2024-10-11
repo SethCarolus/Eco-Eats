@@ -7,9 +7,9 @@ interface
   var currentSupplier : iSupplier = nil;
   var currentAdmin : iAdmin = nil;
   var currentAlpha : iAlpha = nil;
-
   var currentBankCard : IBankCard = nil;
   var currentBank: IBank = nil;
+  var currentCustomerPassword: string;
 
   var currentUserType : TUserType = utInvalid;
 

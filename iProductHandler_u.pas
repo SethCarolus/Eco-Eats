@@ -9,6 +9,7 @@ interface
       function getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
+      procedure updateProduct(const product: IProduct);
     end;
 
 implementation

@@ -1,28 +1,29 @@
 unit clsLogout_u;
 
 interface
-  uses iLogout_u, iDatabaseManager_u;
+  uses iLogout_u, IUserHabitHandler_u;
   type
     TLogout = class(TInterfacedObject, ILogout)
       private
-        fDatabaseManager : IDatabaseManager;
+        fHabitHandler: IUserHabitHandler;
       public
-        constructor create(const databaseManager : IDatabaseManager);
+        constructor create(const habitHandler: IUserHabitHandler);
         procedure LogTimeSpent(const username : string;
                                 const timeSpentInMinutes : Integer);
     end;
 
 implementation
 { TLogout }
-constructor TLogout.create(const databaseManager: IDatabaseManager);
+
+constructor TLogout.create(const habitHandler: IUserHabitHandler);
 begin
-  fDatabaseManager := databaseManager;
+  fHabitHandler := habitHandler;
 end;
 
 procedure TLogout.LogTimeSpent(const username: string;
                                 const timeSpentInMinutes: Integer);
 begin
-  fDatabaseManager.insertTimeSpentOnApplicatiom(username, timeSpentInMinutes);
+  fHabitHandler.insertTimeSpentOnApplicationFor(username, timeSpentInMinutes);
 end;
 
 end.

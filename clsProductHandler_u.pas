@@ -1,34 +1,55 @@
 unit clsProductHandler_u;
 
 interface
-  uses iDatabaseManager_u, IProduct_u ,iProductHandler_u, Generics.Collections;
+  uses IProduct_u ,iProductHandler_u, Generics.Collections;
   type
     TProductHandler = class(TInterfacedObject, IProductHandler)
-      fDatabaseManager: IDatabaseManager;
       public
-        constructor create(const databaseManager: IDatabaseManager);
+        constructor create();
         function getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
         function getAllProducts(): TList<IProduct>;
         procedure updateProducts(const products: TList<IProduct>);
+        procedure updateProduct(const product: IProduct);
     end;
 
 implementation
-  uses SysUtils;
+  uses SysUtils, dmMain_u, clsFactory_u;
 
 { TProductHandler }
 
-constructor TProductHandler.create(const databaseManager: IDatabaseManager);
+constructor TProductHandler.create();
 begin
-  fDatabaseManager := databaseManager;
 end;
 
 function TProductHandler.getAllProducts: TList<IProduct>;
 begin
-  Result := fDatabaseManager.getAllProducts();
-end;
+  With dmMain.qryProduct do
+    begin
+      Close;
+      Sql.Text := 'SELECT * FROM tblProduct';
+      Open;
 
+      Result := TList<IProduct>.Create();
+      First;
+      while not Eof do
+        begin
+          var product :=  TFactory.createProduct(
+                                            FieldByName('id').AsInteger,
+                                            FieldByName('product_name').AsString,
+                                            FieldByName('description').AsString,
+                                            FieldByName('price').AsFloat,
+                                            FieldByName('quantity').AsInteger,
+                                            FieldByName('picture').AsString,
+                                            FieldByName('supplier_id').AsInteger);
+          Result.Add(product);
+          product.SupplierId;
+          Next;
+        end;
+
+    end;
+end;
 function TProductHandler.getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
@@ -44,6 +65,31 @@ begin
   end;
 end;
 
+procedure TProductHandler.updateProduct(const product: IProduct);
+begin
+  with dmMain.tblProduct do
+    begin
+      Open;
+      First;
+      while not Eof do
+        begin
+          if (FieldByName('id').AsInteger = product.Id) then
+            begin
+              Edit;
+              FieldByName('product_name').AsString := Product.Name;
+              FieldByName('description').AsString := Product.Description;
+              FieldByName('price').AsCurrency := product.Price;
+              FieldByName('quantity').AsInteger := product.Quantity;
+              FieldByName('picture').AsString := product.Picture;
+              Post;
+              Break;
+            end;
+            Next;
+        end;
+        Close;
+    end;
+end;
+
 procedure TProductHandler.updateProducts(const products: TList<IProduct>);
 begin
   if (products = nil) then
@@ -51,7 +97,7 @@ begin
 
   for var p in products do
     begin
-      fDatabaseManager.updateProduct(p);
+      updateProduct(p);
     end;
 
 end;

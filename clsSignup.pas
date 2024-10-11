@@ -1,13 +1,18 @@
 unit clsSignup;
 
 interface
-  uses iSignup_u, iBank_u, iDatabaseManager_u ,Generics.Collections, iCustomer_u,
-   iBankCard_u;
+  uses iSignup_u, iBank_u, Generics.Collections, iCustomer_u,
+   iBankCard_u, iBankCardHandler_u, ICustomerHandler_u, iBankHandler_u;
   type
     TSignup = class(TInterfacedObject, ISignup)
-    fDatabaseManager : IDatabaseManager;
+      private
+        fBankCardHandler: IBankCardHandler;
+        fCustomerHandler: ICustomerHandler;
+        fBankHandler:  IBankHandler;
     public
-      constructor create(const databaseManager : IDatabaseManager);
+      constructor create(const bankCardHandler: IBankCardHandler;
+                          const customerHandler: ICustomerHandler;
+                          const bankHandler: IBankHandler);
       function getAllBanks() :  TList<IBank>;
       procedure insertCustomer(const customer : iCustomer; const password : string);
       procedure insertBankCard(const bankCard : IBankCard);
@@ -18,31 +23,35 @@ implementation
 
 { TSignup }
 
-constructor TSignup.create(const databaseManager : IDatabaseManager);
+constructor TSignup.create(const bankCardHandler: IBankCardHandler;
+                    const customerHandler: ICustomerHandler;
+                    const bankHandler: IBankHandler);
 begin
-  fDatabaseManager := databaseManager;
+   fBankCardHandler := bankCardHandler;
+   fCustomerHandler := customerHandler;
+   fBankHandler := bankHandler;
 end;
 
 function TSignup.getAllBanks: TList<IBank>;
 begin
-  Result := fDatabaseManager.getAllBanks();
+  Result := fBankHandler.getAllBanks();
 end;
 
 function TSignup.getBankCardWith(const accountNumber : string): IBankCard;
 begin
-  Result := fDatabaseManager.getBankCardWith(accountNumber);
+  Result := fBankCardHandler.getBankCardWith(accountNumber);
 end;
 
 procedure TSignup.insertBankCard(const bankCard: IBankCard);
 begin
-  fDatabaseManager.insertBankCard(bankCard);
+  fBankCardHandler.insertBankCard(bankCard);
 end;
 
 
 procedure TSignup.insertCustomer(const customer: iCustomer;
   const password: string);
 begin
-  fDatabaseManager.insertCustomer(customer, password);
+  fCustomerHandler.insertCustomer(customer, password);
 end;
 
 end.

@@ -19,10 +19,12 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cStore
+    ActiveCard = cCustomerEditProfile
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
+    ExplicitWidth = 1198
+    ExplicitHeight = 792
     object cLogin: TCard
       Left = 0
       Top = 0
@@ -165,6 +167,12 @@ object frmMain: TfrmMain
             Control = edtCustomerViewProfileFirstName
           end
           item
+            Control = Label32
+          end
+          item
+            Control = edtCustomerViewProfilePassword
+          end
+          item
             Control = Label3
           end
           item
@@ -175,7 +183,7 @@ object frmMain: TfrmMain
         Padding.Top = 20
         Padding.Right = 20
         Padding.Bottom = 20
-        Spacing = 15
+        Spacing = 4
         TabOrder = 0
         object Label2: TLabel
           Left = 21
@@ -187,7 +195,7 @@ object frmMain: TfrmMain
         end
         object edtCustomerViewProfileUsername: TEdit
           Left = 21
-          Top = 61
+          Top = 50
           Width = 740
           Height = 33
           Alignment = taCenter
@@ -200,7 +208,7 @@ object frmMain: TfrmMain
         end
         object Label1: TLabel
           Left = 21
-          Top = 109
+          Top = 87
           Width = 740
           Height = 25
           Alignment = taCenter
@@ -208,7 +216,7 @@ object frmMain: TfrmMain
         end
         object edtCustomerViewProfileFirstName: TEdit
           Left = 21
-          Top = 149
+          Top = 116
           Width = 740
           Height = 33
           Alignment = taCenter
@@ -216,9 +224,27 @@ object frmMain: TfrmMain
           ReadOnly = True
           TabOrder = 1
         end
+        object Label32: TLabel
+          Left = 21
+          Top = 153
+          Width = 740
+          Height = 25
+          Alignment = taCenter
+          Caption = 'Password'
+        end
+        object edtCustomerViewProfilePassword: TEdit
+          Left = 21
+          Top = 182
+          Width = 740
+          Height = 33
+          Alignment = taCenter
+          BorderStyle = bsNone
+          ReadOnly = True
+          TabOrder = 3
+        end
         object Label3: TLabel
           Left = 21
-          Top = 197
+          Top = 219
           Width = 740
           Height = 25
           Alignment = taCenter
@@ -226,7 +252,7 @@ object frmMain: TfrmMain
         end
         object edtCustomerViewProfileLastName: TEdit
           Left = 21
-          Top = 237
+          Top = 248
           Width = 740
           Height = 33
           Alignment = taCenter
@@ -492,6 +518,7 @@ object frmMain: TfrmMain
         Height = 47
         Caption = 'Edit Profile'
         TabOrder = 4
+        OnClick = Button1Click
       end
       object btnCustomerViewProfileStore: TButton
         Left = 933
@@ -706,7 +733,7 @@ object frmMain: TfrmMain
         UseWheelForScrolling = True
         object StackPanel7: TStackPanel
           Left = -2
-          Top = -9
+          Top = 3
           Width = 760
           Height = 400
           BevelOuter = bvNone
@@ -1111,7 +1138,7 @@ object frmMain: TfrmMain
             Left = 20
             Top = 598
             Width = 234
-            Height = 35
+            Height = 36
             MaxValue = 50
             MinValue = 1
             TabOrder = 3
@@ -1275,6 +1302,352 @@ object frmMain: TfrmMain
           Caption = 'Purchase'
           TabOrder = 2
           OnClick = btnStorePurchaseClick
+        end
+      end
+    end
+    object cCustomerEditProfile: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 5
+      TabOrder = 5
+      OnEnter = cCustomerEditProfileEnter
+      ExplicitWidth = 1198
+      ExplicitHeight = 792
+      object imgCustomerEditProfile: TImage
+        Left = 8
+        Top = 12
+        Width = 300
+        Height = 300
+        Stretch = True
+      end
+      object Label18: TLabel
+        Left = 128
+        Top = 338
+        Width = 41
+        Height = 25
+        Alignment = taCenter
+        Caption = 'Bank'
+      end
+      object StackPanel10: TStackPanel
+        Left = 400
+        Top = 12
+        Width = 782
+        Height = 300
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        ControlCollection = <
+          item
+            Control = Label23
+          end
+          item
+            Control = edtCustomerEditProfileUsername
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label24
+          end
+          item
+            Control = edtCustomerEditProfilePassword
+          end
+          item
+            Control = Label25
+          end
+          item
+            Control = edtCustomerEditProfileFirstName
+          end
+          item
+            Control = Label26
+          end
+          item
+            Control = edtCustomerEditProfileLastName
+          end>
+        HorizontalPositioning = sphpFill
+        Padding.Left = 20
+        Padding.Top = 20
+        Padding.Right = 20
+        Padding.Bottom = 20
+        Spacing = 5
+        TabOrder = 0
+        object Label23: TLabel
+          Left = 21
+          Top = 21
+          Width = 740
+          Height = 25
+          Alignment = taCenter
+          Caption = 'Username'
+        end
+        object edtCustomerEditProfileUsername: TEdit
+          Left = 21
+          Top = 51
+          Width = 740
+          Height = 33
+          Alignment = taCenter
+          BevelInner = bvNone
+          BevelKind = bkTile
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          ReadOnly = True
+          TabOrder = 2
+          OnChange = edtCustomerSignupUsernameChange
+        end
+        object Label24: TLabel
+          Left = 21
+          Top = 89
+          Width = 740
+          Height = 25
+          Alignment = taCenter
+          Caption = 'Password'
+        end
+        object edtCustomerEditProfilePassword: TEdit
+          Left = 21
+          Top = 119
+          Width = 740
+          Height = 33
+          Alignment = taCenter
+          BorderStyle = bsNone
+          TabOrder = 3
+          OnChange = edtCustomerSignupPasswordChange
+        end
+        object Label25: TLabel
+          Left = 21
+          Top = 157
+          Width = 740
+          Height = 25
+          Alignment = taCenter
+          Caption = 'First Name'
+        end
+        object edtCustomerEditProfileFirstName: TEdit
+          Left = 21
+          Top = 187
+          Width = 740
+          Height = 33
+          Alignment = taCenter
+          BorderStyle = bsNone
+          TabOrder = 1
+          OnChange = edtCustomerSignupFirstNameChange
+        end
+        object Label26: TLabel
+          Left = 21
+          Top = 225
+          Width = 740
+          Height = 25
+          Alignment = taCenter
+          Caption = 'Last Name'
+        end
+        object edtCustomerEditProfileLastName: TEdit
+          Left = 21
+          Top = 255
+          Width = 740
+          Height = 33
+          Alignment = taCenter
+          BorderStyle = bsNone
+          TabOrder = 0
+          OnChange = edtCustomerSignupLastNameChange
+        end
+      end
+      object btnCustomerEditProfileBack: TBitBtn
+        Left = 8
+        Top = 734
+        Width = 150
+        Height = 50
+        Caption = '&Back'
+        Kind = bkIgnore
+        NumGlyphs = 2
+        TabOrder = 1
+        OnClick = btnCustomerEditProfileBackClick
+      end
+      object btnCustomerEditProfileMakeChanges: TButton
+        Left = 600
+        Top = 655
+        Width = 382
+        Height = 47
+        Caption = 'Make Changes'
+        TabOrder = 2
+        OnClick = btnCustomerEditProfileMakeChangesClick
+      end
+      object lstCustomerEditProfileBanks: TListBox
+        Left = 8
+        Top = 376
+        Width = 300
+        Height = 265
+        ItemHeight = 25
+        TabOrder = 3
+        OnClick = lstCustomerEditProfileBanksClick
+      end
+      object ScrollBox2: TScrollBox
+        Left = 400
+        Top = 335
+        Width = 782
+        Height = 306
+        HorzScrollBar.Visible = False
+        VertScrollBar.Position = 89
+        VertScrollBar.Smooth = True
+        VertScrollBar.Style = ssFlat
+        VertScrollBar.Tracking = True
+        BevelInner = bvNone
+        BevelOuter = bvRaised
+        TabOrder = 4
+        UseWheelForScrolling = True
+        object StackPanel11: TStackPanel
+          Left = -2
+          Top = -98
+          Width = 760
+          Height = 400
+          BevelOuter = bvNone
+          ControlCollection = <
+            item
+              Control = Label27
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = edtCustomerEditProfileAccountNumber
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = Label28
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = edtCustomerEditProfileNameOnCard
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = Label29
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = dtpCustomerEditProfileExpireyDate
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = Label30
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = edtCustomerEditProfileSecurityCode
+              HorizontalPositioning = sphpFill
+            end
+            item
+              Control = Label31
+              HorizontalPositioning = sphpCenter
+            end
+            item
+              Control = nbxCustomerEditProfileBalance
+              HorizontalPositioning = sphpFill
+            end>
+          Padding.Left = 10
+          Padding.Top = 10
+          Padding.Right = 10
+          Padding.Bottom = 10
+          Spacing = 10
+          TabOrder = 0
+          object Label27: TLabel
+            Left = 311
+            Top = 10
+            Width = 138
+            Height = 25
+            Alignment = taCenter
+            Caption = 'AccountNumber'
+          end
+          object edtCustomerEditProfileAccountNumber: TEdit
+            Left = 10
+            Top = 45
+            Width = 740
+            Height = 33
+            Alignment = taCenter
+            BevelInner = bvNone
+            BevelKind = bkTile
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            MaxLength = 8
+            ReadOnly = True
+            TabOrder = 4
+            OnChange = edtCustomerSignupNameOnCardChange
+          end
+          object Label28: TLabel
+            Left = 317
+            Top = 88
+            Width = 125
+            Height = 25
+            Alignment = taCenter
+            Caption = 'Name On Card'
+          end
+          object edtCustomerEditProfileNameOnCard: TEdit
+            Left = 10
+            Top = 123
+            Width = 740
+            Height = 33
+            Alignment = taCenter
+            BevelInner = bvNone
+            BevelKind = bkTile
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            TabOrder = 0
+            OnChange = edtCustomerSignupNameOnCardChange
+          end
+          object Label29: TLabel
+            Left = 327
+            Top = 166
+            Width = 105
+            Height = 25
+            Alignment = taCenter
+            Caption = 'Expirey Date'
+          end
+          object dtpCustomerEditProfileExpireyDate: TDateTimePicker
+            Left = 10
+            Top = 201
+            Width = 740
+            Height = 33
+            Date = 45569.000000000000000000
+            Time = 0.977367199076979900
+            TabOrder = 3
+            OnChange = dtpCustomerSignupExpireyDateChange
+          end
+          object Label30: TLabel
+            Left = 322
+            Top = 244
+            Width = 116
+            Height = 25
+            Alignment = taCenter
+            Caption = 'Security Code'
+          end
+          object edtCustomerEditProfileSecurityCode: TEdit
+            Left = 10
+            Top = 279
+            Width = 740
+            Height = 33
+            Alignment = taCenter
+            BevelInner = bvNone
+            BevelKind = bkTile
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            MaxLength = 3
+            TabOrder = 1
+            OnChange = edtCustomerSignupSecurityCodeChange
+          end
+          object Label31: TLabel
+            Left = 347
+            Top = 322
+            Width = 66
+            Height = 25
+            Alignment = taCenter
+            Caption = 'Balance'
+          end
+          object nbxCustomerEditProfileBalance: TNumberBox
+            Left = 10
+            Top = 357
+            Width = 740
+            Height = 33
+            Alignment = taCenter
+            Mode = nbmCurrency
+            TabOrder = 2
+            StyleName = 'Windows10 SlateGray'
+            OnChange = nbxCustomerSignupBalanceChange
+          end
         end
       end
     end

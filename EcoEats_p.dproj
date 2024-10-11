@@ -130,14 +130,12 @@
         <DCCReference Include="iAdmin_u.pas"/>
         <DCCReference Include="iAlpha_u.pas"/>
         <DCCReference Include="iCustomer_u.pas"/>
-        <DCCReference Include="iDatabaseManager_u.pas"/>
         <DCCReference Include="iLogin_u.pas"/>
         <DCCReference Include="iSupplier_u.pas"/>
         <DCCReference Include="users_u.pas"/>
         <DCCReference Include="clsAdmin_u.pas"/>
         <DCCReference Include="clsAlpha_u.pas"/>
         <DCCReference Include="clsCustomer_u.pas"/>
-        <DCCReference Include="clsDatabaseManager_u.pas"/>
         <DCCReference Include="clsFactory_u.pas"/>
         <DCCReference Include="clsLogin_u.pas"/>
         <DCCReference Include="clsMockLogin_u.pas"/>
@@ -175,6 +173,18 @@
         <DCCReference Include="iPaymentHandler_u.pas"/>
         <DCCReference Include="clsPaymentHandler_u.pas"/>
         <DCCReference Include="storeExceptions_u.pas"/>
+        <DCCReference Include="clsCustomerHandler_u.pas"/>
+        <DCCReference Include="ICustomerHandler_u.pas"/>
+        <DCCReference Include="iAdminHandler_u.pas"/>
+        <DCCReference Include="clsAdminHandler_u.pas"/>
+        <DCCReference Include="clsBankCardHandler_u.pas"/>
+        <DCCReference Include="iBankCardHandler_u.pas"/>
+        <DCCReference Include="clsBankHandler_u.pas"/>
+        <DCCReference Include="iBankHandler_u.pas"/>
+        <DCCReference Include="clsAlphaHandler_u.pas"/>
+        <DCCReference Include="IAlphaHandler_u.pas"/>
+        <DCCReference Include="clsUserHandler_u.pas"/>
+        <DCCReference Include="iUserHandler_u.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

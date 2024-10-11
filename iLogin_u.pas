@@ -7,12 +7,12 @@ interface
         function userExists(const username: string): Boolean;
         function passwordCorrect(const username: string; const password: string): Boolean;
         function getUserType(const username: string): TUserType;
-        function getCustomer(const username: string): iCustomer;
-        function getAdmin(const username: string): IAdmin;
-        function getSupplier(const username: string): ISupplier;
-        function getAlpha(const username: string): IAlpha;
-        function getBankCard(const id: Integer): IBankCard;
-        function getBank(const id: Integer): IBank;
+        function getCustomerBy(const username: string): iCustomer;
+        function getAdminBy(const username: string): IAdmin;
+        function getSupplierBy(const username: string): ISupplier;
+        function getAlphaBy(const username: string): IAlpha;
+        function getBankCardBy(const id: Integer): IBankCard;
+        function getBankBy(const id: Integer): IBank;
 
         procedure setupCustomer(const username : string);
     end;

@@ -1,5 +1,4 @@
 unit ITimer_u;
-
 interface
   type
     ITimer = interface

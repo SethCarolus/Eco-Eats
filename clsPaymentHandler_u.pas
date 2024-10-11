@@ -1,17 +1,17 @@
 unit clsPaymentHandler_u;
 
 interface
-  uses storeExceptions_u, iBankCard_u, iCart_u, iPaymentHandler_u, iDatabaseManager_u,
-    iProductHandler_u;
+  uses storeExceptions_u, iBankCard_u, iCart_u, iPaymentHandler_u,
+    iProductHandler_u, iBankCardHandler_u;
 
     type
       TPaymentHandler = class(TInterfacedObject, IPaymentHandler)
         private
-          fDatabaseManager: IDatabaseManager;
           fProductHandler: IProductHandler;
+          fBankCardHandler: IBankCardHandler;
         public
-          constructor create(const databaseManager: IDatabaseManager;
-          const productHandler: IProductHandler);
+          constructor create(const productHandler: IProductHandler;
+                              const bankCardHandler: IBankCardHandler);
           procedure makePayment(const bankCard: IBankCard; const cart: ICart);
       end;
 implementation
@@ -19,11 +19,11 @@ implementation
 
 { TPaymentHandler }
 
-constructor TPaymentHandler.create(const databaseManager: IDatabaseManager;
-                                  const productHandler: IProductHandler);
+constructor TPaymentHandler.create(const productHandler: IProductHandler;
+                    const bankCardHandler: IBankCardHandler);
 begin
-  fDatabaseManager := databaseManager;
   fProductHandler := productHandler;
+  fBankCardHandler := bankCardHandler;
 end;
 
 procedure TPaymentHandler.makePayment(const bankCard: IBankCard;
@@ -63,52 +63,7 @@ begin
   end;
 
     // Update the bank card information in the database
-    fDatabaseManager.updateBankCard(bankCard);
+    fBankCardHandler.updateBankCard(bankCard);
 end;
 
 end.
-
-//// Deduct the total cart amount from the bank card balance
-//  bankCard.Balance := bankCard.Balance - cart.getTotal();
-//
-//  // Initialize the dictionary to tally products
-//  var productTally := TDictionary<Integer, Integer>.Create;
-//  try
-//    // Loop through products in the cart to tally the quantities
-//    for var i := 0 to cart.Products.Count - 1 do
-//    begin
-//      var product := cart[i];  // Access the product in the cart
-//      var currentProductID := product.Id;  // Assuming each product has an ID property
-//
-//      if productTally.ContainsKey(currentProductID) then
-//        productTally[currentProductID] := productTally[currentProductID] + product.Quantity
-//      else
-//        productTally.Add(currentProductID, product.Quantity);
-//    end;
-//
-//    // Get available products from the database
-//    var availableProducts := fDatabaseManager.getAllProducts();
-//
-//    // Now update each product in the database based on the tally
-//    for var kvp in productTally do
-//    begin
-//      var productToUpdate: IProduct := nil;
-//
-//      // Search for the product in the available products using a for loop
-//      for var j := 0 to availableProducts.Count - 1 do
-//      begin
-//        if availableProducts[j].Id = kvp.Key then
-//        begin
-//          productToUpdate := availableProducts[j];
-//          Break;  // Exit the loop once the product is found
-//        end;
-//      end;
-//
-//      if productToUpdate <> nil then
-//      begin
-//        var productQuantity := kvp.Value;
-//        // Update the product's quantity in the database
-//        productToUpdate.Quantity := productToUpdate.Quantity - productQuantity;
-//        fDatabaseManager.updateProduct(productToUpdate);
-//      end;
-//    end;
