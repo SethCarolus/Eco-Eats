@@ -19,12 +19,10 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cCustomerEditProfile
+    ActiveCard = cSupplierViewProducts
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
-    ExplicitWidth = 1198
-    ExplicitHeight = 792
     object cLogin: TCard
       Left = 0
       Top = 0
@@ -72,7 +70,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Username'
           TabOrder = 1
-          Text = 'johndoe'
+          Text = 'clicks'
           OnChange = edtLoginUsernameChange
         end
         object edtLoginPassword: TLabeledEdit
@@ -86,7 +84,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Password'
           TabOrder = 0
-          Text = 'P@ssw0rd123'
+          Text = 'superfit123'
           OnChange = edtLoginPasswordChange
         end
         object btnLoginLogin: TButton
@@ -518,7 +516,6 @@ object frmMain: TfrmMain
         Height = 47
         Caption = 'Edit Profile'
         TabOrder = 4
-        OnClick = Button1Click
       end
       object btnCustomerViewProfileStore: TButton
         Left = 933
@@ -1138,7 +1135,7 @@ object frmMain: TfrmMain
             Left = 20
             Top = 598
             Width = 234
-            Height = 36
+            Height = 35
             MaxValue = 50
             MinValue = 1
             TabOrder = 3
@@ -1313,8 +1310,6 @@ object frmMain: TfrmMain
       CardIndex = 5
       TabOrder = 5
       OnEnter = cCustomerEditProfileEnter
-      ExplicitWidth = 1198
-      ExplicitHeight = 792
       object imgCustomerEditProfile: TImage
         Left = 8
         Top = 12
@@ -1649,6 +1644,121 @@ object frmMain: TfrmMain
             OnChange = nbxCustomerSignupBalanceChange
           end
         end
+      end
+    end
+    object cSupplierViewProducts: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 6
+      TabOrder = 6
+      OnEnter = cSupplierViewProductsEnter
+      OnExit = cSupplierViewProductsExit
+      object imgSupplierViewProducts: TImage
+        Left = 410
+        Top = 192
+        Width = 300
+        Height = 300
+        Stretch = True
+      end
+      object lstSupplierViewProducts: TListBox
+        Left = 8
+        Top = 192
+        Width = 377
+        Height = 438
+        ItemHeight = 25
+        TabOrder = 0
+        OnClick = lstSupplierViewProductsClick
+      end
+      object memSupplierViewProductsDescription: TMemo
+        Left = 748
+        Top = 192
+        Width = 434
+        Height = 438
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 1
+      end
+      object Panel9: TPanel
+        Left = 8
+        Top = 145
+        Width = 377
+        Height = 41
+        Caption = 'Products'
+        TabOrder = 2
+      end
+      object pnlSupplierViewProductsSupplierName: TPanel
+        Left = 258
+        Top = 24
+        Width = 700
+        Height = 100
+        Caption = 'Supplier Name'
+        TabOrder = 3
+      end
+      object edtSupplierViewProductsPrice: TLabeledEdit
+        Left = 418
+        Top = 528
+        Width = 300
+        Height = 33
+        Alignment = taCenter
+        EditLabel.Width = 66
+        EditLabel.Height = 25
+        EditLabel.Caption = 'Balance'
+        NumbersOnly = True
+        ReadOnly = True
+        TabOrder = 4
+        Text = ''
+      end
+      object edtSupplierViewProductsQuantity: TLabeledEdit
+        Left = 418
+        Top = 597
+        Width = 300
+        Height = 33
+        Alignment = taCenter
+        EditLabel.Width = 142
+        EditLabel.Height = 25
+        EditLabel.Caption = 'Quantity In Stock'
+        NumbersOnly = True
+        ReadOnly = True
+        TabOrder = 5
+        Text = ''
+      end
+      object btnSupplierViewProducts: TBitBtn
+        Left = 8
+        Top = 734
+        Width = 150
+        Height = 50
+        Caption = '&Back'
+        Kind = bkIgnore
+        NumGlyphs = 2
+        TabOrder = 6
+        OnClick = btnSupplierViewProductsClick
+      end
+      object btnSupplierViewProductsEdit: TButton
+        Left = 418
+        Top = 658
+        Width = 300
+        Height = 47
+        Caption = 'Edit'
+        TabOrder = 7
+      end
+      object btnSupplierViewProductsAdd: TButton
+        Left = 748
+        Top = 658
+        Width = 434
+        Height = 47
+        Caption = 'Add'
+        TabOrder = 8
+      end
+      object btnSupplierViewProductsDelete: TButton
+        Left = 8
+        Top = 658
+        Width = 377
+        Height = 47
+        Caption = 'Delete'
+        TabOrder = 9
+        OnClick = btnSupplierViewProductsDeleteClick
       end
     end
   end

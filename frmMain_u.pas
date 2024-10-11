@@ -137,6 +137,18 @@ type
     nbxCustomerEditProfileBalance: TNumberBox;
     Label32: TLabel;
     edtCustomerViewProfilePassword: TEdit;
+    cSupplierViewProducts: TCard;
+    lstSupplierViewProducts: TListBox;
+    imgSupplierViewProducts: TImage;
+    memSupplierViewProductsDescription: TMemo;
+    Panel9: TPanel;
+    pnlSupplierViewProductsSupplierName: TPanel;
+    edtSupplierViewProductsPrice: TLabeledEdit;
+    edtSupplierViewProductsQuantity: TLabeledEdit;
+    btnSupplierViewProducts: TBitBtn;
+    btnSupplierViewProductsEdit: TButton;
+    btnSupplierViewProductsAdd: TButton;
+    btnSupplierViewProductsDelete: TButton;
     procedure btnLoginLoginClick(Sender: TObject);
     procedure cCustomerViewProfileEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -181,10 +193,14 @@ type
     procedure lstStoreCartClick(Sender: TObject);
     procedure btnStorePurchaseClick(Sender: TObject);
     procedure cCustomerEditProfileEnter(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure btnCustomerEditProfileBackClick(Sender: TObject);
     procedure btnCustomerEditProfileMakeChangesClick(Sender: TObject);
     procedure lstCustomerEditProfileBanksClick(Sender: TObject);
+    procedure cSupplierViewProductsEnter(Sender: TObject);
+    procedure lstSupplierViewProductsClick(Sender: TObject);
+    procedure cSupplierViewProductsExit(Sender: TObject);
+    procedure btnSupplierViewProductsClick(Sender: TObject);
+    procedure btnSupplierViewProductsDeleteClick(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
@@ -196,6 +212,8 @@ type
     procedure DisplayCart();
     procedure DisplayProductInStore();
     procedure UpdateStoreComponents();
+    procedure DisplayProductInSupplierViewProducts();
+    procedure DisplayProductsInSupplierViewProducts();
 
     // Current Card Property
     function getCurrentCard: TCard;
@@ -215,6 +233,15 @@ type
     property SelectedProductInCart: IProduct
           read getSelectedProductInCart
           write setSelectedProductInCart;
+          
+    // Selected Product In SupplierViewProducts  Property
+    function getSelectedProductInSupplierViewProducts(): IProduct;
+    procedure setSelectedProductInSupplierViewProducts(const product: IProduct);
+    property SelectedProductInSupplierViewProducts: IProduct
+            read getSelectedProductInSupplierViewProducts
+            write setSelectedProductInSupplierViewProducts;
+
+    
   public
     { Public declarations }
   end;
@@ -232,6 +259,7 @@ implementation
   var _currentCard: TCard;
   var _selectedProductInStore: IProduct = nil;
   var _selectedProductInCart: IProduct = nil;
+  var _selectedProductInSupplierViewProducts: IProduct = nil;
   var sProfilePictureEditPage: string;
 
 {$R *.dfm}
@@ -497,17 +525,33 @@ begin
   UpdateStoreComponents();
 end;
 
+procedure TfrmMain.btnSupplierViewProductsClick(Sender: TObject);
+begin
+  LogOut();
+  CurrentCard := cLogin;
+end;
+
+procedure TfrmMain.btnSupplierViewProductsDeleteClick(Sender: TObject);
+begin
+  var productHandler  := TFactory.createProductHandler();
+
+  if (SelectedProductInSupplierViewProducts = nil) then
+    begin
+      ShowMessage('Select a product!');
+      Exit;
+    end;
+
+  productHandler.deleteProduct(SelectedProductInSupplierViewProducts);
+
+  DisplayProductsInSupplierViewProducts();
+
+end;
+
 procedure TfrmMain.btnViewHabitsBackClick(Sender: TObject);
 begin
   if (currentUserType = utCustomer) then
     CurrentCard := cCustomerViewProfile;
 end;
-
-procedure TfrmMain.Button1Click(Sender: TObject);
-begin
-  CurrentCard := cCustomerEditProfile;
-end;
-
 
 procedure TfrmMain.btnCustomerViewProfileStoreClick(Sender: TObject);
 begin
@@ -600,6 +644,21 @@ begin
   UpdateStoreComponents;
 end;
 
+procedure TfrmMain.cSupplierViewProductsEnter(Sender: TObject);
+begin
+  pnlSupplierViewProductsSupplierName.Caption := currentSupplier.DisplayName;
+
+  DisplayProductsInSupplierViewProducts();
+
+  SelectedProductInSupplierViewProducts := Products[0];
+end;
+
+procedure TfrmMain.cSupplierViewProductsExit(Sender: TObject);
+begin
+  currentSupplier := nil;
+  Products := nil;
+end;
+
 procedure TfrmMain.cViewHabitsEnter(Sender: TObject);
 begin
   btnViewHabitsBack.SetFocus();
@@ -647,6 +706,34 @@ begin
 
   spdStoreProductQuantity.Value := 1;
   spdStoreProductQuantity.MaxValue := SelectedProductInStore.Quantity;
+end;
+
+procedure TfrmMain.DisplayProductInSupplierViewProducts;
+begin
+  imgSupplierViewProducts.Picture.LoadFromFile(GetCurrentDir + '/ProductPictures/' + SelectedProductInSupplierViewProducts.Picture);
+  
+  edtSupplierViewProductsPrice.Text := 
+    SelectedProductInSupplierViewProducts.Price.ToString(ffCurrency, 10, 2);
+    
+  edtSupplierViewProductsQuantity.Text := 
+    SelectedProductInSupplierViewProducts.Quantity.ToString();
+    
+  memSupplierViewProductsDescription.Text :=
+    SelectedProductInSupplierViewProducts.Description;
+end;
+
+procedure TfrmMain.DisplayProductsInSupplierViewProducts;
+begin
+  var productHandler := TFactory.createProductHandler();
+  Products := productHandler.getProductsBy(currentSupplier.Id);
+
+  lstSupplierViewProducts.Clear;
+  for var p in Products do
+    begin
+      lstSupplierViewProducts.Items.Add(p.Name);
+    end;
+
+  SelectedProductInSupplierViewProducts := Products[0];
 end;
 
 procedure TfrmMain.dtpCustomerSignupExpireyDateChange(Sender: TObject);
@@ -783,6 +870,13 @@ begin
   DisplayProductInStore();
 end;
 
+procedure TfrmMain.setSelectedProductInSupplierViewProducts(
+  const product: IProduct);
+begin
+  _selectedProductInSupplierViewProducts := product;
+  DisplayProductInSupplierViewProducts();
+end;
+
 function TfrmMain.getSelectedProductInCart: IProduct;
 begin
   Result := _selectedProductInCart;
@@ -791,6 +885,11 @@ end;
 function TfrmMain.getSelectedProductInStore: IProduct;
 begin
   Result := _selectedProductInStore;
+end;
+
+function TfrmMain.getSelectedProductInSupplierViewProducts: IProduct;
+begin
+  Result := _selectedProductInSupplierViewProducts;
 end;
 
 procedure TfrmMain.LogOut;
@@ -820,8 +919,8 @@ begin
   end;
 
   var logOut := TFactory.createLogout;
-
   logOut.LogTimeSpent(username, Ceil(Timer.elapsedSeconds / 60));
+  timer := nil;
 end;
 
 procedure TfrmMain.lstCustomerEditProfileBanksClick(Sender: TObject);
@@ -873,6 +972,11 @@ begin
   SelectedProductInStore := Products[lstStoreProducts.ItemIndex];
 end;
 
+procedure TfrmMain.lstSupplierViewProductsClick(Sender: TObject);
+begin
+  SelectedProductInSupplierViewProducts := Products[lstSupplierViewProducts.ItemIndex];  
+end;
+
 procedure TfrmMain.NavigateToFirstPage(const username: string; const login : ILogin);
 begin
   currentUserType := login.getUserType(username);
@@ -887,7 +991,7 @@ begin
         utSupplier:
           begin
             currentSupplier := login.getSupplierBy(username);
-            // cplMain.ActiveCard :=
+            CurrentCard := cSupplierViewProducts;
           end;
         utAdmin:
           begin

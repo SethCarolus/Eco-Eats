@@ -10,8 +10,10 @@ interface
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
         function getAllProducts(): TList<IProduct>;
+        function getProductsBy(const supplierId: Integer): TList<IProduct>;
         procedure updateProducts(const products: TList<IProduct>);
         procedure updateProduct(const product: IProduct);
+        procedure deleteProduct(const product: IProduct);
     end;
 
 implementation
@@ -21,6 +23,26 @@ implementation
 
 constructor TProductHandler.create();
 begin
+end;
+
+procedure TProductHandler.deleteProduct(const product: IProduct);
+begin
+  with dmMain.tblProduct do
+    begin
+      Open;
+      First;
+
+      while not Eof do
+        begin
+          if (FieldByName('id').AsInteger <> product.Id) then
+            begin
+              Next;
+              continue;
+            end;
+          Delete;
+          Exit;
+        end;
+    end;
 end;
 
 function TProductHandler.getAllProducts: TList<IProduct>;
@@ -50,6 +72,22 @@ begin
 
     end;
 end;
+function TProductHandler.getProductsBy(
+  const supplierId: Integer): TList<IProduct>;
+begin
+  var allProducts := getAllProducts();
+
+  Result := TList<IProduct>.Create();
+  for var p in allProducts do
+    begin
+      if (p.SupplierId = supplierId) then
+        begin
+          Result.Add(p);
+        end;
+    end;
+
+end;
+
 function TProductHandler.getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
