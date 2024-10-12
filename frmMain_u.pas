@@ -164,6 +164,20 @@ type
     btnSupplierAddProductAddProductImage: TButton;
     Panel8: TPanel;
     btnSupplierAddProductBack: TBitBtn;
+    cSupplierEditProduct: TCard;
+    StackPanel13: TStackPanel;
+    Label37: TLabel;
+    edtSupplierEditProductName: TEdit;
+    Label38: TLabel;
+    redSupplierEditProductDescription: TRichEdit;
+    Label39: TLabel;
+    nbxSupplierEditProductQuantity: TNumberBox;
+    Label40: TLabel;
+    nbxSupplierEditProductPrice: TNumberBox;
+    btnSupplierEditProductMakeChanges: TButton;
+    Panel10: TPanel;
+    imgSupplierEditProduct: TImage;
+    btnSupplierEditProductBack: TBitBtn;
     procedure btnLoginLoginClick(Sender: TObject);
     procedure cCustomerViewProfileEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -224,6 +238,14 @@ type
     procedure btnSupplierAddProductAddClick(Sender: TObject);
     procedure btnSupplierAddProductAddProductImageClick(Sender: TObject);
     procedure btnSupplierAddProductBackClick(Sender: TObject);
+    procedure btnSupplierEditProductBackClick(Sender: TObject);
+    procedure btnSupplierViewProductsEditClick(Sender: TObject);
+    procedure btnSupplierEditProductMakeChangesClick(Sender: TObject);
+    procedure edtSupplierEditProductNameChange(Sender: TObject);
+    procedure redSupplierEditProductDescriptionChange(Sender: TObject);
+    procedure nbxSupplierEditProductQuantityChange(Sender: TObject);
+    procedure nbxSupplierEditProductPriceChange(Sender: TObject);
+    procedure cSupplierEditProductExit(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
@@ -239,6 +261,8 @@ type
     procedure DisplayProductsInSupplierViewProducts();
     procedure UpdateSupplierAddProductComponents();
     procedure SaveProductPicture(const product: IProduct);
+    procedure UpdateSupplierEditProductComponents();
+    procedure UpdateSupplierViewProductsComponents();
 
     // Current Card Property
     function getCurrentCard: TCard;
@@ -397,11 +421,13 @@ procedure TfrmMain.btnSignupAddProfilePictureClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   sFilePath: string;
+  sCurrentDir: string;
 begin
+  sCurrentDir := GetCurrentDir();
   OpenDialog := TOpenDialog.Create(nil);
   try
     OpenDialog.Title := 'Select a JPEG File';
-    OpenDialog.InitialDir := GetCurrentDir; // Set the initial directory
+    OpenDialog.InitialDir := sCurrentDir; // Set the initial directory
     OpenDialog.Filter := 'JPEG files (*.jpg; *.jpeg)|*.jpg;*.jpeg'; // Filter for JPEG files
     OpenDialog.DefaultExt := 'jpg'; // Default extension
 
@@ -419,6 +445,7 @@ begin
   end;
 
   sProfilePictureSignupPage := sFilePath;
+  SetCurrentDir(sCurrentDir);
 end;
 procedure TfrmMain.btnSignupSignupClick(Sender: TObject);
 begin
@@ -573,11 +600,13 @@ procedure TfrmMain.btnSupplierAddProductAddProductImageClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   sFilePath: string;
+  sCurrentDir: string;
 begin
+  sCurrentDir := GetCurrentDir();
   OpenDialog := TOpenDialog.Create(nil);
   try
     OpenDialog.Title := 'Select a JPEG File';
-    OpenDialog.InitialDir := GetCurrentDir; // Set the initial directory
+    OpenDialog.InitialDir := sCurrentDir; // Set the initial directory
     OpenDialog.Filter := 'JPEG files (*.jpg; *.jpeg)|*.jpg;*.jpeg'; // Filter for JPEG files
     OpenDialog.DefaultExt := 'jpg'; // Default extension
 
@@ -597,12 +626,59 @@ begin
   sProductPictureAddProductPage := sFilePath;
 
   UpdateSupplierAddProductComponents();
+
+  SetCurrentDir(sCurrentDir)
 end;
 
 procedure TfrmMain.btnSupplierAddProductBackClick(Sender: TObject);
 begin
+  //Clearing Page
+  imgSupplierAddProduct.Picture.Graphic := nil;
+  edtSupplierAddProductName.Text := '';
+  redSupplierAddProductDescription.Text := '';
+  nbxSupplierAddProductPrice.Value := nbxSupplierAddProductPrice.MinValue;
+  nbxSupplierAddProductQuantity.Value := nbxSupplierAddProductQuantity.MinValue;
+  UpdateSupplierAddProductComponents();
+
   DisplayProductsInSupplierViewProducts();
-  SelectedProductInSupplierViewProducts := Products[0];
+  CurrentCard :=  cSupplierViewProducts;
+end;
+
+procedure TfrmMain.btnSupplierEditProductBackClick(Sender: TObject);
+begin
+  CurrentCard := cSupplierViewProducts;
+  DisplayProductsInSupplierViewProducts();
+end;
+
+procedure TfrmMain.btnSupplierEditProductMakeChangesClick(Sender: TObject);
+begin
+  var name := edtSupplierEditProductName.Text;
+  var description := redSupplierEditProductDescription.Text;
+  var price: Double := nbxSupplierEditProductPrice.Value;
+  var quantity: Integer := nbxSupplierEditProductQuantity.Value.ToString().ToInteger();
+  var picture: string := SelectedProductInSupplierViewProducts.Picture;
+  var suppliedId := SelectedProductInSupplierViewProducts.SupplierId;
+
+
+  var product := TFactory.createProduct(SelectedProductInSupplierViewProducts.Id,
+                                        name,
+                                        description,
+                                        price,
+                                        quantity,
+                                        picture,
+                                        suppliedId);
+
+  var productHandler := TFactory.createProductHandler();
+  try
+    productHandler.updateProduct(product);
+  except
+    on E: Exception do
+      begin
+        ShowMessage('Error while editing product!: ' + e.Message);
+      end;
+  end;
+
+  CurrentCard := cSupplierViewProducts;
 end;
 
 procedure TfrmMain.btnSupplierViewProductsAddClick(Sender: TObject);
@@ -637,8 +713,31 @@ begin
       end;
   end;
 
+  SelectedProductInSupplierViewProducts := nil;
   DisplayProductsInSupplierViewProducts();
+  UpdateSupplierViewProductsComponents();
+end;
 
+procedure TfrmMain.btnSupplierViewProductsEditClick(Sender: TObject);
+begin
+  edtSupplierEditProductName.Text :=
+    SelectedProductInSupplierViewProducts.Name;
+    
+  redSupplierEditProductDescription.Text := 
+    SelectedProductInSupplierViewProducts.Description;
+
+  nbxSupplierEditProductQuantity.Value := 
+    SelectedProductInSupplierViewProducts.Quantity;
+
+  nbxSupplierEditProductPrice.Value :=
+    SelectedProductInSupplierViewProducts.Price;
+
+  imgSupplierEditProduct.Picture
+  .LoadFromFile(GetCurrentDir 
+                + '/ProductPictures/' 
+                + SelectedProductInSupplierViewProducts.Picture);
+
+  CurrentCard := cSupplierEditProduct;
 end;
 
 procedure TfrmMain.btnViewHabitsBackClick(Sender: TObject);
@@ -743,11 +842,20 @@ begin
   UpdateSupplierAddProductComponents();
 end;
 
+procedure TfrmMain.cSupplierEditProductExit(Sender: TObject);
+begin
+  edtSupplierEditProductName.Text := '';
+  redSupplierEditProductDescription.Text := '';
+  nbxSupplierEditProductQuantity.Value := 0;
+  nbxSupplierEditProductPrice.Value := 0;
+end;
+
 procedure TfrmMain.cSupplierViewProductsEnter(Sender: TObject);
 begin
   pnlSupplierViewProductsSupplierName.Caption := currentSupplier.DisplayName;
-
+  SelectedProductInSupplierViewProducts := nil;
   DisplayProductsInSupplierViewProducts();
+  UpdateSupplierViewProductsComponents();
 end;
 
 procedure TfrmMain.cViewHabitsEnter(Sender: TObject);
@@ -801,12 +909,21 @@ end;
 
 procedure TfrmMain.DisplayProductInSupplierViewProducts;
 begin
+  if (SelectedProductInSupplierViewProducts = nil) then
+    begin
+      imgSupplierViewProducts.Picture.Graphic := nil;
+      edtSupplierViewProductsPrice.Text := '';
+      edtSupplierViewProductsQuantity.Text := '';
+      memSupplierViewProductsDescription.Text := '';
+      Exit;
+    end;
+
   imgSupplierViewProducts.Picture.LoadFromFile(GetCurrentDir + '/ProductPictures/' + SelectedProductInSupplierViewProducts.Picture);
-  
-  edtSupplierViewProductsPrice.Text := 
+
+  edtSupplierViewProductsPrice.Text :=
     SelectedProductInSupplierViewProducts.Price.ToString(ffCurrency, 10, 2);
     
-  edtSupplierViewProductsQuantity.Text := 
+  edtSupplierViewProductsQuantity.Text :=
     SelectedProductInSupplierViewProducts.Quantity.ToString();
     
   memSupplierViewProductsDescription.Text :=
@@ -823,9 +940,6 @@ begin
     begin
       lstSupplierViewProducts.Items.Add(p.Name);
     end;
-
-  if (not Products.IsEmpty) then
-    SelectedProductInSupplierViewProducts := Products[0];
 end;
 
 procedure TfrmMain.dtpCustomerSignupExpireyDateChange(Sender: TObject);
@@ -931,6 +1045,11 @@ end;
 procedure TfrmMain.edtSupplierAddProductQuantityChange(Sender: TObject);
 begin
   UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.edtSupplierEditProductNameChange(Sender: TObject);
+begin
+  UpdateSupplierEditProductComponents();
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1076,7 +1195,8 @@ end;
 
 procedure TfrmMain.lstSupplierViewProductsClick(Sender: TObject);
 begin
-  SelectedProductInSupplierViewProducts := Products[lstSupplierViewProducts.ItemIndex];  
+  SelectedProductInSupplierViewProducts := Products[lstSupplierViewProducts.ItemIndex];
+  UpdateSupplierViewProductsComponents();
 end;
 
 procedure TfrmMain.NavigateToFirstPage(const username: string; const login : ILogin);
@@ -1118,9 +1238,24 @@ begin
   UpdateSupplierAddProductComponents();
 end;
 
+procedure TfrmMain.nbxSupplierEditProductPriceChange(Sender: TObject);
+begin
+  UpdateSupplierEditProductComponents();
+end;
+
+procedure TfrmMain.nbxSupplierEditProductQuantityChange(Sender: TObject);
+begin
+  UpdateSupplierEditProductComponents();
+end;
+
 procedure TfrmMain.redSupplierAddProductDescriptionChange(Sender: TObject);
 begin
   UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.redSupplierEditProductDescriptionChange(Sender: TObject);
+begin
+  UpdateSupplierEditProductComponents();
 end;
 
 procedure TfrmMain.redViewHabitsClick(Sender: TObject);
@@ -1320,6 +1455,38 @@ begin
       btnSupplierAddProductAdd.Enabled := True;
     end;
 
+end;
+
+procedure TfrmMain.UpdateSupplierEditProductComponents;
+begin
+  if (
+    (string.IsNullOrWhiteSpace(edtSupplierEditProductName.Text)) or
+    (string.IsNullOrWhiteSpace(redSupplierEditProductDescription.Text)) or
+    (nbxSupplierEditProductQuantity.Value < 1) or
+    (nbxSupplierEditProductPrice.Value < 1)
+    ) then
+    begin
+      btnSupplierEditProductMakeChanges.Enabled := False;
+    end
+  else
+    begin
+      btnSupplierEditProductMakeChanges.Enabled := True;
+    end;
+end;
+
+procedure TfrmMain.UpdateSupplierViewProductsComponents();
+begin
+  if (SelectedProductInSupplierViewProducts = nil) then
+    begin
+      btnSupplierViewProductsEdit.Enabled := False;
+      btnSupplierViewProductsDelete.Enabled := False;
+    end
+  else
+    begin
+      btnSupplierViewProductsEdit.Enabled := True;
+      btnSupplierViewProductsDelete.Enabled := True;
+      DisplayProductInSupplierViewProducts();
+    end;
 end;
 
 end.

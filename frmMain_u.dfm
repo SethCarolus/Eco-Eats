@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cSupplierAddProduct
+    ActiveCard = cCustomerViewProfile
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -1135,7 +1135,7 @@ object frmMain: TfrmMain
             Left = 20
             Top = 598
             Width = 234
-            Height = 36
+            Height = 35
             MaxValue = 50
             MinValue = 1
             TabOrder = 3
@@ -1700,9 +1700,9 @@ object frmMain: TfrmMain
         Width = 300
         Height = 33
         Alignment = taCenter
-        EditLabel.Width = 66
+        EditLabel.Width = 42
         EditLabel.Height = 25
-        EditLabel.Caption = 'Balance'
+        EditLabel.Caption = 'Price'
         NumbersOnly = True
         ReadOnly = True
         TabOrder = 4
@@ -1740,6 +1740,7 @@ object frmMain: TfrmMain
         Height = 47
         Caption = 'Edit'
         TabOrder = 7
+        OnClick = btnSupplierViewProductsEditClick
       end
       object btnSupplierViewProductsAdd: TButton
         Left = 748
@@ -1932,6 +1933,172 @@ object frmMain: TfrmMain
         NumGlyphs = 2
         TabOrder = 3
         OnClick = btnSupplierAddProductBackClick
+      end
+    end
+    object cSupplierEditProduct: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 8
+      TabOrder = 8
+      OnEnter = cSupplierAddProductEnter
+      OnExit = cSupplierEditProductExit
+      object StackPanel13: TStackPanel
+        Left = 8
+        Top = 59
+        Width = 585
+        Height = 646
+        ControlCollection = <
+          item
+            Control = Label37
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = edtSupplierEditProductName
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label38
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = redSupplierEditProductDescription
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label39
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = nbxSupplierEditProductQuantity
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label40
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = nbxSupplierEditProductPrice
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = btnSupplierEditProductMakeChanges
+            HorizontalPositioning = sphpFill
+          end>
+        Padding.Left = 20
+        Padding.Top = 20
+        Padding.Right = 20
+        Padding.Bottom = 20
+        Spacing = 5
+        TabOrder = 0
+        object Label37: TLabel
+          Left = 267
+          Top = 21
+          Width = 50
+          Height = 25
+          Caption = 'Name'
+        end
+        object edtSupplierEditProductName: TEdit
+          Left = 21
+          Top = 51
+          Width = 543
+          Height = 33
+          Alignment = taCenter
+          TabOrder = 0
+          OnChange = edtSupplierEditProductNameChange
+        end
+        object Label38: TLabel
+          Left = 244
+          Top = 89
+          Width = 96
+          Height = 25
+          Caption = 'Description'
+        end
+        object redSupplierEditProductDescription: TRichEdit
+          Left = 21
+          Top = 119
+          Width = 543
+          Height = 259
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -19
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          OnChange = redSupplierEditProductDescriptionChange
+        end
+        object Label39: TLabel
+          Left = 221
+          Top = 383
+          Width = 142
+          Height = 25
+          Caption = 'Quantity In Stock'
+        end
+        object nbxSupplierEditProductQuantity: TNumberBox
+          Left = 21
+          Top = 413
+          Width = 543
+          Height = 33
+          AcceptExpressions = True
+          Alignment = taCenter
+          TabOrder = 4
+          Value = 1.000000000000000000
+          OnChange = nbxSupplierEditProductQuantityChange
+        end
+        object Label40: TLabel
+          Left = 271
+          Top = 451
+          Width = 42
+          Height = 25
+          Caption = 'Price'
+        end
+        object nbxSupplierEditProductPrice: TNumberBox
+          Left = 21
+          Top = 481
+          Width = 543
+          Height = 33
+          AcceptExpressions = True
+          Alignment = taCenter
+          TabOrder = 2
+          Value = 1.000000000000000000
+          OnChange = nbxSupplierEditProductPriceChange
+        end
+        object btnSupplierEditProductMakeChanges: TButton
+          Left = 21
+          Top = 519
+          Width = 543
+          Height = 47
+          Caption = 'Make Changes'
+          TabOrder = 3
+          OnClick = btnSupplierEditProductMakeChangesClick
+        end
+      end
+      object Panel10: TPanel
+        Left = 682
+        Top = 59
+        Width = 500
+        Height = 500
+        TabOrder = 1
+        object imgSupplierEditProduct: TImage
+          Left = 50
+          Top = 50
+          Width = 400
+          Height = 400
+          Stretch = True
+        end
+      end
+      object btnSupplierEditProductBack: TBitBtn
+        Left = 8
+        Top = 734
+        Width = 150
+        Height = 50
+        Caption = '&Back'
+        Kind = bkIgnore
+        NumGlyphs = 2
+        TabOrder = 2
+        OnClick = btnSupplierEditProductBackClick
       end
     end
   end
