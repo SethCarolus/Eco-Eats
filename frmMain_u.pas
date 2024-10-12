@@ -7,7 +7,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.WinXPanels,
   Vcl.StdCtrls, Vcl.Mask, Vcl.Imaging.pngimage, jpeg, Vcl.Buttons,
-  Vcl.NumberBox, Vcl.Samples.Spin, IOUtils, Vcl.ComCtrls, Math;
+  Vcl.NumberBox, Vcl.Samples.Spin, IOUtils, Vcl.ComCtrls, Math, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, dmMain_u;
 
 type
   TfrmMain = class(TForm)
@@ -178,6 +179,15 @@ type
     Panel10: TPanel;
     imgSupplierEditProduct: TImage;
     btnSupplierEditProductBack: TBitBtn;
+    cAdminViewDatabase: TCard;
+    dbgAdminViewDatabaseCustomer: TDBGrid;
+    dbgAdminViewDatabaseSupplier: TDBGrid;
+    dbgAdminViewDatabaseBankCard: TDBGrid;
+    cAlphaViewDatabase: TCard;
+    dbgAlphaViewDatabaseCustomer: TDBGrid;
+    dbgAlphaViewDatabaseSupplier: TDBGrid;
+    dbgAlphaViewDatabaseBankCard: TDBGrid;
+    dbgAlphaViewDatabaseAdmin: TDBGrid;
     procedure btnLoginLoginClick(Sender: TObject);
     procedure cCustomerViewProfileEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -299,7 +309,8 @@ var
   frmMain: TfrmMain;
 
 implementation
-  uses clsFactory_u, global_u, users_u, DateUtils, storeExceptions_u, Exceptions_u;
+  uses clsFactory_u, global_u, users_u, DateUtils, storeExceptions_u,
+      Exceptions_u;
 
   var iSelectedIndexofBankOnSignupPage: Integer;
   var iSelectedIndexofBankOnEditPage: Integer;
@@ -1239,12 +1250,12 @@ begin
         utAdmin:
           begin
             currentAdmin := login.getAdminBy(username);
-            //cplMain.ActiveCard :=
+            CurrentCard := cAdminViewDatabase;
           end;
         utAlpha:
           begin
             currentAlpha := login.getAlphaBy(username);
-            //cplMain.ActiveCard :=
+            CurrentCard := cAlphaViewDatabase;
           end;
     end;
 end;

@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cLogin
+    ActiveCard = cAlphaViewDatabase
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -70,7 +70,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Username'
           TabOrder = 1
-          Text = 'johndoe'
+          Text = 'jamesblake'
           OnChange = edtLoginUsernameChange
         end
         object edtLoginPassword: TLabeledEdit
@@ -84,7 +84,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Password'
           TabOrder = 0
-          Text = 'P@ssw0rd123'
+          Text = 'jamesblake123'
           OnChange = edtLoginPasswordChange
         end
         object btnLoginLogin: TButton
@@ -2100,6 +2100,116 @@ object frmMain: TfrmMain
         NumGlyphs = 2
         TabOrder = 2
         OnClick = btnSupplierEditProductBackClick
+      end
+    end
+    object cAdminViewDatabase: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 9
+      TabOrder = 9
+      ExplicitTop = -64
+      object dbgAdminViewDatabaseCustomer: TDBGrid
+        Left = 8
+        Top = 32
+        Width = 1174
+        Height = 200
+        DataSource = dmMain.dscCustomer
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object dbgAdminViewDatabaseSupplier: TDBGrid
+        Left = 8
+        Top = 265
+        Width = 1174
+        Height = 200
+        DataSource = dmMain.dscSupplier
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object dbgAdminViewDatabaseBankCard: TDBGrid
+        Left = 8
+        Top = 496
+        Width = 1174
+        Height = 200
+        DataSource = dmMain.dscBankCard
+        TabOrder = 2
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+    end
+    object cAlphaViewDatabase: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 10
+      TabOrder = 10
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object dbgAlphaViewDatabaseCustomer: TDBGrid
+        Left = 8
+        Top = 40
+        Width = 1174
+        Height = 150
+        DataSource = dmMain.dscCustomer
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object dbgAlphaViewDatabaseSupplier: TDBGrid
+        Left = 8
+        Top = 217
+        Width = 1174
+        Height = 150
+        DataSource = dmMain.dscSupplier
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object dbgAlphaViewDatabaseBankCard: TDBGrid
+        Left = 8
+        Top = 392
+        Width = 1174
+        Height = 150
+        DataSource = dmMain.dscBankCard
+        TabOrder = 2
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
+      object dbgAlphaViewDatabaseAdmin: TDBGrid
+        Left = 8
+        Top = 560
+        Width = 1174
+        Height = 150
+        DataSource = dmMain.dscAdmin
+        TabOrder = 3
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -19
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
       end
     end
   end
