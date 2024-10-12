@@ -158,6 +158,7 @@
     <Transaction>2024/10/10 11:13:19.000.333,D:\source\Coding Projects\Delphi Projects\EcoEats\clsDatabaseManager_u.pas=</Transaction>
     <Transaction>2024/10/10 11:13:25.000.553,D:\source\Coding Projects\Delphi Projects\EcoEats\iDatabaseManager_u.pas=</Transaction>
     <Transaction>2024/10/10 17:46:46.000.517,D:\source\Coding Projects\Delphi Projects\EcoEats\clsTimerHandler_u.pas=</Transaction>
+    <Transaction>2024/10/12 20:38:46.525,D:\source\Coding Projects\Delphi Projects\EcoEats\Exceptions_u.pas=D:\source\Coding Projects\Delphi Projects\EcoEats\DatabaseExceptions_u.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="clsAdmin_u.pas"/>
@@ -184,7 +185,7 @@
     <File Path="clsBank_u.pas"/>
     <File Path="clsSignup.pas"/>
     <File Path="iSignup_u.pas"/>
-    <File Path="DatabaseExceptions_u.pas"/>
+    <File Path="Exceptions_u.pas"/>
     <File Path="clsTimer_u.pas"/>
     <File Path="ITimer_u.pas"/>
     <File Path="iLogout_u.pas"/>

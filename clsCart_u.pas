@@ -11,7 +11,8 @@ interface
         public
           constructor create();
           procedure remove(const product: IProduct);
-          procedure add(const product: IProduct);
+          procedure add(const product: IProduct);overload;
+          procedure add(const product: IProduct; const quantity: Integer);overload;
           function getTotal(): Double;
           procedure clear();
           function isEmpty: Boolean;
@@ -22,7 +23,7 @@ interface
       end;
 
 implementation
-  uses SysUtils;
+  uses SysUtils, Exceptions_u;
 
 { TCart }
 
@@ -32,6 +33,27 @@ begin
     raise EArgumentNilException.Create('product cannot be null');
 
   fProducts.Add(product);
+end;
+
+procedure TCart.add(const product: IProduct; const quantity: Integer);
+begin
+  if (product = nil) then
+    raise EArgumentException.Create('product cannot be null');
+
+  var iQuantInCart := 0;
+  for var p in Products do
+      begin
+        if (p.Id = product.Id) then
+          iQuantInCart := iQuantInCart + p.Quantity;
+      end;
+
+  if (product.Quantity < iQuantInCart + quantity) then
+    raise ENotEnoughStockException.Create('Not Enough stock!');
+
+  for var i := 0 to quantity - 1 do
+    begin
+      add(product);
+    end;
 end;
 
 procedure TCart.clear;

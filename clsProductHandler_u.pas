@@ -111,6 +111,9 @@ function TProductHandler.getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
 begin
+  if (products = nil) then
+    raise EArgumentException.Create('products cannot be null');
+
   Result := TDictionary<Integer, Integer>.Create;
 
   for var i := 0 to products.Count - 1 do

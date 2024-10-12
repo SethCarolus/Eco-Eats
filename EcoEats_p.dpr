@@ -26,7 +26,7 @@ uses
   clsBank_u in 'clsBank_u.pas',
   clsSignup in 'clsSignup.pas',
   iSignup_u in 'iSignup_u.pas',
-  DatabaseExceptions_u in 'DatabaseExceptions_u.pas',
+  Exceptions_u in 'Exceptions_u.pas',
   clsTimer_u in 'clsTimer_u.pas',
   ITimer_u in 'ITimer_u.pas',
   iLogout_u in 'iLogout_u.pas',

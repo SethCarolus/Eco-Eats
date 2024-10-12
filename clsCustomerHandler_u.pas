@@ -16,7 +16,7 @@ interface
 
 implementation
 
-uses dmMain_u, clsFactory_u, SysUtils, DatabaseExceptions_u;
+uses dmMain_u, clsFactory_u, SysUtils, Exceptions_u;
 
 { TCustomerHandler }
 

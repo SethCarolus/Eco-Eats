@@ -6,7 +6,8 @@ interface
     ICart = interface
       function getProducts(): TList<IProduct>;
       procedure remove(const product: IProduct);
-      procedure add(const product: IProduct);
+      procedure add(const product: IProduct);overload;
+      procedure add(const product: IProduct; const quantity: Integer);overload;
       function getTotal(): Double;
       function getProductAt(index: Integer): IProduct;
       procedure clear();

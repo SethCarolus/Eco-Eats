@@ -155,7 +155,7 @@
         <DCCReference Include="clsBank_u.pas"/>
         <DCCReference Include="clsSignup.pas"/>
         <DCCReference Include="iSignup_u.pas"/>
-        <DCCReference Include="DatabaseExceptions_u.pas"/>
+        <DCCReference Include="Exceptions_u.pas"/>
         <DCCReference Include="clsTimer_u.pas"/>
         <DCCReference Include="ITimer_u.pas"/>
         <DCCReference Include="iLogout_u.pas"/>

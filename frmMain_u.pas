@@ -42,7 +42,7 @@ type
     edtCustomerViewProfileBankCardSecurityCode: TEdit;
     edtCustomerViewProfileBankCardBalance: TEdit;
     edtCustomerViewProfileBankLongName: TEdit;
-    Button1: TButton;
+    btnCustomerViewProfileEdit: TButton;
     btnCustomerViewProfileStore: TButton;
     Label9: TLabel;
     Label10: TLabel;
@@ -246,6 +246,7 @@ type
     procedure nbxSupplierEditProductQuantityChange(Sender: TObject);
     procedure nbxSupplierEditProductPriceChange(Sender: TObject);
     procedure cSupplierEditProductExit(Sender: TObject);
+    procedure btnCustomerViewProfileEditClick(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
@@ -298,8 +299,7 @@ var
   frmMain: TfrmMain;
 
 implementation
-  uses clsFactory_u, global_u, users_u,
-    DatabaseExceptions_u, DateUtils, storeExceptions_u;
+  uses clsFactory_u, global_u, users_u, DateUtils, storeExceptions_u, Exceptions_u;
 
   var iSelectedIndexofBankOnSignupPage: Integer;
   var iSelectedIndexofBankOnEditPage: Integer;
@@ -350,7 +350,6 @@ begin
   try
     customerHandler.editCustomer(customer, password);
     bankCardHandler.updateBankCard(bankCard);
-    SaveProfilePicture(customer.ProfilePicture);
   except
 
   end;
@@ -362,6 +361,8 @@ begin
       setupCustomer(customer.Username);
       currentCustomerPassword := password;
     end;
+
+    CurrentCard := cCustomerViewProfile;
 end;
 
 procedure TfrmMain.btnCustomerViewHabitsClick(Sender: TObject);
@@ -374,6 +375,11 @@ procedure TfrmMain.btnCustomerViewProfileBackClick(Sender: TObject);
 begin
   LogOut;
   CurrentCard := cLogin;
+end;
+
+procedure TfrmMain.btnCustomerViewProfileEditClick(Sender: TObject);
+begin
+  CurrentCard := cCustomerEditProfile;
 end;
 
 procedure TfrmMain.btnLoginLoginClick(Sender: TObject);
@@ -512,10 +518,16 @@ begin
       Exit;
     end;
 
-  for var i := 0 to spdStoreProductQuantity.Value - 1 do
-    begin
-      Cart.add(SelectedProductInStore);
-    end;
+  try
+    Cart.add(SelectedProductInStore, spdStoreProductQuantity.Value);
+  except
+    on E: ENotEnoughStockException do
+      begin
+        ShowMessage('Not enough stock of this product!');
+        Exit;
+      end;
+  end;
+
   UpdateStoreComponents;
 
 end;
@@ -594,6 +606,8 @@ begin
   SaveProductPicture(product);
 
   UpdateSupplierAddProductComponents();
+
+  CurrentCard := cSupplierViewProducts;
 end;
 
 procedure TfrmMain.btnSupplierAddProductAddProductImageClick(Sender: TObject);
@@ -1191,10 +1205,17 @@ end;
 procedure TfrmMain.lstStoreProductsClick(Sender: TObject);
 begin
   SelectedProductInStore := Products[lstStoreProducts.ItemIndex];
+  UpdateStoreComponents();
 end;
 
 procedure TfrmMain.lstSupplierViewProductsClick(Sender: TObject);
 begin
+  if (lstSupplierViewProducts.ItemIndex = -1) then
+    begin
+      ShowMessage('Please select a product!');
+      Exit;
+    end;
+
   SelectedProductInSupplierViewProducts := Products[lstSupplierViewProducts.ItemIndex];
   UpdateSupplierViewProductsComponents();
 end;
@@ -1406,7 +1427,7 @@ end;
 
 procedure TfrmMain.UpdateStoreComponents;
 begin
-  if (SelectedProductInStore = nil) then
+  if (SelectedProductInStore = nil) or (SelectedProductInStore.Quantity < 1) then
     begin
       btnStoreAddToCart.Enabled := False;
     end

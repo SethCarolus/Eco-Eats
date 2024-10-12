@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cCustomerViewProfile
+    ActiveCard = cLogin
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -70,7 +70,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Username'
           TabOrder = 1
-          Text = 'clicks'
+          Text = 'johndoe'
           OnChange = edtLoginUsernameChange
         end
         object edtLoginPassword: TLabeledEdit
@@ -84,7 +84,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Password'
           TabOrder = 0
-          Text = 'superfit123'
+          Text = 'P@ssw0rd123'
           OnChange = edtLoginPasswordChange
         end
         object btnLoginLogin: TButton
@@ -509,13 +509,14 @@ object frmMain: TfrmMain
         TabOrder = 3
         OnClick = btnCustomerViewProfileBackClick
       end
-      object Button1: TButton
+      object btnCustomerViewProfileEdit: TButton
         Left = 400
         Top = 663
         Width = 249
         Height = 47
         Caption = 'Edit Profile'
         TabOrder = 4
+        OnClick = btnCustomerViewProfileEditClick
       end
       object btnCustomerViewProfileStore: TButton
         Left = 933
