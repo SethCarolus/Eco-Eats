@@ -149,6 +149,21 @@ type
     btnSupplierViewProductsEdit: TButton;
     btnSupplierViewProductsAdd: TButton;
     btnSupplierViewProductsDelete: TButton;
+    cSupplierAddProduct: TCard;
+    StackPanel12: TStackPanel;
+    Label33: TLabel;
+    edtSupplierAddProductName: TEdit;
+    Label34: TLabel;
+    redSupplierAddProductDescription: TRichEdit;
+    Label35: TLabel;
+    nbxSupplierAddProductPrice: TNumberBox;
+    Label36: TLabel;
+    btnSupplierAddProductAdd: TButton;
+    nbxSupplierAddProductQuantity: TNumberBox;
+    imgSupplierAddProduct: TImage;
+    btnSupplierAddProductAddProductImage: TButton;
+    Panel8: TPanel;
+    btnSupplierAddProductBack: TBitBtn;
     procedure btnLoginLoginClick(Sender: TObject);
     procedure cCustomerViewProfileEnter(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -198,9 +213,17 @@ type
     procedure lstCustomerEditProfileBanksClick(Sender: TObject);
     procedure cSupplierViewProductsEnter(Sender: TObject);
     procedure lstSupplierViewProductsClick(Sender: TObject);
-    procedure cSupplierViewProductsExit(Sender: TObject);
     procedure btnSupplierViewProductsClick(Sender: TObject);
     procedure btnSupplierViewProductsDeleteClick(Sender: TObject);
+    procedure btnSupplierViewProductsAddClick(Sender: TObject);
+    procedure edtSupplierAddProductNameChange(Sender: TObject);
+    procedure redSupplierAddProductDescriptionChange(Sender: TObject);
+    procedure edtSupplierAddProductQuantityChange(Sender: TObject);
+    procedure nbxSupplierAddProductPriceChange(Sender: TObject);
+    procedure cSupplierAddProductEnter(Sender: TObject);
+    procedure btnSupplierAddProductAddClick(Sender: TObject);
+    procedure btnSupplierAddProductAddProductImageClick(Sender: TObject);
+    procedure btnSupplierAddProductBackClick(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
@@ -214,6 +237,8 @@ type
     procedure UpdateStoreComponents();
     procedure DisplayProductInSupplierViewProducts();
     procedure DisplayProductsInSupplierViewProducts();
+    procedure UpdateSupplierAddProductComponents();
+    procedure SaveProductPicture(const product: IProduct);
 
     // Current Card Property
     function getCurrentCard: TCard;
@@ -233,7 +258,7 @@ type
     property SelectedProductInCart: IProduct
           read getSelectedProductInCart
           write setSelectedProductInCart;
-          
+
     // Selected Product In SupplierViewProducts  Property
     function getSelectedProductInSupplierViewProducts(): IProduct;
     procedure setSelectedProductInSupplierViewProducts(const product: IProduct);
@@ -241,7 +266,6 @@ type
             read getSelectedProductInSupplierViewProducts
             write setSelectedProductInSupplierViewProducts;
 
-    
   public
     { Public declarations }
   end;
@@ -261,6 +285,7 @@ implementation
   var _selectedProductInCart: IProduct = nil;
   var _selectedProductInSupplierViewProducts: IProduct = nil;
   var sProfilePictureEditPage: string;
+  var sProductPictureAddProductPage: string;
 
 {$R *.dfm}
 
@@ -525,9 +550,71 @@ begin
   UpdateStoreComponents();
 end;
 
+procedure TfrmMain.btnSupplierAddProductAddClick(Sender: TObject);
+begin
+  var product := TFactory.createProduct(-1, edtSupplierAddProductName.Text,
+                                      redSupplierAddProductDescription.Text,
+                                      StrToFloat(nbxSupplierAddProductPrice.Value.ToString()),
+                                      StrToInt(nbxSupplierAddProductQuantity.Value.ToString()),
+                                      sProductPictureAddProductPage,
+                                      currentSupplier.Id);
+
+  var productHandler := TFactory.createProductHandler();
+  product.Id := productHandler.getNextAvailableId();
+  product.Picture := product.Name + product.Id.ToString() + '.jpeg';
+
+  productHandler.insertProduct(product);
+  SaveProductPicture(product);
+
+  UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.btnSupplierAddProductAddProductImageClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  sFilePath: string;
+begin
+  OpenDialog := TOpenDialog.Create(nil);
+  try
+    OpenDialog.Title := 'Select a JPEG File';
+    OpenDialog.InitialDir := GetCurrentDir; // Set the initial directory
+    OpenDialog.Filter := 'JPEG files (*.jpg; *.jpeg)|*.jpg;*.jpeg'; // Filter for JPEG files
+    OpenDialog.DefaultExt := 'jpg'; // Default extension
+
+    if OpenDialog.Execute then
+    begin
+      sFilePath := OpenDialog.FileName;
+      // Load the image into the img component
+      if FileExists(sFilePath) then
+        imgSupplierAddProduct.Picture.LoadFromFile(sFilePath)
+      else
+        ShowMessage('File not found: ' + sFilePath);
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+
+  sProductPictureAddProductPage := sFilePath;
+
+  UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.btnSupplierAddProductBackClick(Sender: TObject);
+begin
+  DisplayProductsInSupplierViewProducts();
+  SelectedProductInSupplierViewProducts := Products[0];
+end;
+
+procedure TfrmMain.btnSupplierViewProductsAddClick(Sender: TObject);
+begin
+  CurrentCard := cSupplierAddProduct;
+end;
+
 procedure TfrmMain.btnSupplierViewProductsClick(Sender: TObject);
 begin
   LogOut();
+  currentSupplier := nil;
+  Products := nil;
   CurrentCard := cLogin;
 end;
 
@@ -540,8 +627,15 @@ begin
       ShowMessage('Select a product!');
       Exit;
     end;
-
-  productHandler.deleteProduct(SelectedProductInSupplierViewProducts);
+  try
+    productHandler.deleteProduct(SelectedProductInSupplierViewProducts);
+  except
+    on E: Exception do
+      begin
+        ShowMessage('Error Deleting Product!');
+        Exit;
+      end;
+  end;
 
   DisplayProductsInSupplierViewProducts();
 
@@ -644,19 +738,16 @@ begin
   UpdateStoreComponents;
 end;
 
+procedure TfrmMain.cSupplierAddProductEnter(Sender: TObject);
+begin
+  UpdateSupplierAddProductComponents();
+end;
+
 procedure TfrmMain.cSupplierViewProductsEnter(Sender: TObject);
 begin
   pnlSupplierViewProductsSupplierName.Caption := currentSupplier.DisplayName;
 
   DisplayProductsInSupplierViewProducts();
-
-  SelectedProductInSupplierViewProducts := Products[0];
-end;
-
-procedure TfrmMain.cSupplierViewProductsExit(Sender: TObject);
-begin
-  currentSupplier := nil;
-  Products := nil;
 end;
 
 procedure TfrmMain.cViewHabitsEnter(Sender: TObject);
@@ -733,7 +824,8 @@ begin
       lstSupplierViewProducts.Items.Add(p.Name);
     end;
 
-  SelectedProductInSupplierViewProducts := Products[0];
+  if (not Products.IsEmpty) then
+    SelectedProductInSupplierViewProducts := Products[0];
 end;
 
 procedure TfrmMain.dtpCustomerSignupExpireyDateChange(Sender: TObject);
@@ -829,6 +921,16 @@ end;
 procedure TfrmMain.edtLoginUsernameChange(Sender: TObject);
 begin
   UpdateLoginPageComponents();
+end;
+
+procedure TfrmMain.edtSupplierAddProductNameChange(Sender: TObject);
+begin
+  UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.edtSupplierAddProductQuantityChange(Sender: TObject);
+begin
+  UpdateSupplierAddProductComponents();
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1011,6 +1113,16 @@ begin
     UpdateCustomerSignupComponents();
 end;
 
+procedure TfrmMain.nbxSupplierAddProductPriceChange(Sender: TObject);
+begin
+  UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.redSupplierAddProductDescriptionChange(Sender: TObject);
+begin
+  UpdateSupplierAddProductComponents();
+end;
+
 procedure TfrmMain.redViewHabitsClick(Sender: TObject);
 begin
   HideCaret(redViewHabits.Handle);
@@ -1034,24 +1146,53 @@ begin
   HideCaret(redViewHabits.Handle);
 end;
 
-procedure TfrmMain.SaveProfilePicture(const username: string);
+procedure TfrmMain.SaveProductPicture(const product: IProduct);
 var
-  DestinationDir: string;
+  sDestinationDir: string;
 begin
+  if (product = nil) then
+    raise EArgumentException.Create('product cannot be null!');
+
   // Set the destination directory relative to the application's executable
-  DestinationDir := ExtractFilePath(Application.ExeName) + 'CustomerProfilePictures';
+  sDestinationDir := ExtractFilePath(Application.ExeName) + 'ProductPictures';
 
   // Ensure the destination directory exists
-  if not TDirectory.Exists(DestinationDir) then
-    TDirectory.CreateDirectory(DestinationDir);
+  if not TDirectory.Exists(sDestinationDir) then
+    TDirectory.CreateDirectory(sDestinationDir);
+
+  // Copy the file to the destination directory
+  try
+    if (FileExists(TPath.Combine(sDestinationDir, product.Picture, True))) then
+      Exit;
+    TFile.Copy(sProductPictureAddProductPage, TPath.Combine(sDestinationDir, product.Picture, True));
+    TPath.Combine(sDestinationDir, TPath.GetFileName(sProfilePictureSignupPage)); // Return the path of the saved file
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Error copying file: ' + E.Message);
+    end;
+  end;
+end;
+
+
+procedure TfrmMain.SaveProfilePicture(const username: string);
+var
+  sDestinationDir: string;
+begin
+  // Set the destination directory relative to the application's executable
+  sDestinationDir := ExtractFilePath(Application.ExeName) + 'CustomerProfilePictures';
+
+  // Ensure the destination directory exists
+  if not TDirectory.Exists(sDestinationDir) then
+    TDirectory.CreateDirectory(sDestinationDir);
 
   // Get the original file extension
   var sExtension := TPath.GetExtension(sProfilePictureSignupPage);
 
   // Copy the file to the destination directory
   try
-    TFile.Copy(sProfilePictureSignupPage, TPath.Combine(DestinationDir, username + sExtension, True));
-    TPath.Combine(DestinationDir, TPath.GetFileName(sProfilePictureSignupPage)); // Return the path of the saved file
+    TFile.Copy(sProfilePictureSignupPage, TPath.Combine(sDestinationDir, username + sExtension, True));
+    TPath.Combine(sDestinationDir, TPath.GetFileName(sProfilePictureSignupPage)); // Return the path of the saved file
   except
     on E: Exception do
     begin
@@ -1160,6 +1301,24 @@ begin
     end;
 
   DisplayCart();
+end;
+
+procedure TfrmMain.UpdateSupplierAddProductComponents;
+begin
+  if (
+    (string.IsNullOrWhiteSpace(edtSupplierAddProductName.Text) or
+    (nbxSupplierAddProductQuantity.Value < 1) or
+    (string.IsNullOrWhiteSpace(redSupplierAddProductDescription.Text)) or
+    (nbxSupplierAddProductPrice.Value <= 0)) or
+    (string.IsNullOrWhiteSpace(sProductPictureAddProductPage))
+    ) then
+    begin
+      btnSupplierAddProductAdd.Enabled := False;
+    end
+  else
+    begin
+      btnSupplierAddProductAdd.Enabled := True;
+    end;
 
 end;
 

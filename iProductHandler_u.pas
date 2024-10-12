@@ -12,6 +12,8 @@ interface
                                 : TDictionary<Integer, Integer>;
       procedure updateProduct(const product: IProduct);
       procedure deleteProduct(const product: IProduct);
+      procedure insertProduct(const product: IProduct);
+      function getNextAvailableId(): Integer;
     end;
 
 implementation

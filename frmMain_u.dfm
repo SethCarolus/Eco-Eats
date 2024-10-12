@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cSupplierViewProducts
+    ActiveCard = cSupplierAddProduct
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -1135,7 +1135,7 @@ object frmMain: TfrmMain
             Left = 20
             Top = 598
             Width = 234
-            Height = 35
+            Height = 36
             MaxValue = 50
             MinValue = 1
             TabOrder = 3
@@ -1654,7 +1654,6 @@ object frmMain: TfrmMain
       CardIndex = 6
       TabOrder = 6
       OnEnter = cSupplierViewProductsEnter
-      OnExit = cSupplierViewProductsExit
       object imgSupplierViewProducts: TImage
         Left = 410
         Top = 192
@@ -1676,8 +1675,7 @@ object frmMain: TfrmMain
         Top = 192
         Width = 434
         Height = 438
-        Lines.Strings = (
-          'Memo1')
+        ReadOnly = True
         TabOrder = 1
       end
       object Panel9: TPanel
@@ -1750,6 +1748,7 @@ object frmMain: TfrmMain
         Height = 47
         Caption = 'Add'
         TabOrder = 8
+        OnClick = btnSupplierViewProductsAddClick
       end
       object btnSupplierViewProductsDelete: TButton
         Left = 8
@@ -1759,6 +1758,180 @@ object frmMain: TfrmMain
         Caption = 'Delete'
         TabOrder = 9
         OnClick = btnSupplierViewProductsDeleteClick
+      end
+    end
+    object cSupplierAddProduct: TCard
+      Left = 0
+      Top = 0
+      Width = 1200
+      Height = 800
+      CardIndex = 7
+      TabOrder = 7
+      OnEnter = cSupplierAddProductEnter
+      object StackPanel12: TStackPanel
+        Left = 8
+        Top = 59
+        Width = 585
+        Height = 646
+        ControlCollection = <
+          item
+            Control = Label33
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = edtSupplierAddProductName
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label34
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = redSupplierAddProductDescription
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label35
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = nbxSupplierAddProductQuantity
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = Label36
+            HorizontalPositioning = sphpCenter
+          end
+          item
+            Control = nbxSupplierAddProductPrice
+            HorizontalPositioning = sphpFill
+          end
+          item
+            Control = btnSupplierAddProductAdd
+            HorizontalPositioning = sphpFill
+          end>
+        Padding.Left = 20
+        Padding.Top = 20
+        Padding.Right = 20
+        Padding.Bottom = 20
+        Spacing = 5
+        TabOrder = 0
+        object Label33: TLabel
+          Left = 267
+          Top = 21
+          Width = 50
+          Height = 25
+          Caption = 'Name'
+        end
+        object edtSupplierAddProductName: TEdit
+          Left = 21
+          Top = 51
+          Width = 543
+          Height = 33
+          Alignment = taCenter
+          TabOrder = 0
+          OnChange = edtSupplierAddProductNameChange
+        end
+        object Label34: TLabel
+          Left = 244
+          Top = 89
+          Width = 96
+          Height = 25
+          Caption = 'Description'
+        end
+        object redSupplierAddProductDescription: TRichEdit
+          Left = 21
+          Top = 119
+          Width = 543
+          Height = 259
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -19
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          OnChange = redSupplierAddProductDescriptionChange
+        end
+        object Label35: TLabel
+          Left = 221
+          Top = 383
+          Width = 142
+          Height = 25
+          Caption = 'Quantity In Stock'
+        end
+        object nbxSupplierAddProductQuantity: TNumberBox
+          Left = 21
+          Top = 413
+          Width = 543
+          Height = 33
+          AcceptExpressions = True
+          Alignment = taCenter
+          TabOrder = 4
+          Value = 1.000000000000000000
+          OnChange = nbxSupplierAddProductPriceChange
+        end
+        object Label36: TLabel
+          Left = 271
+          Top = 451
+          Width = 42
+          Height = 25
+          Caption = 'Price'
+        end
+        object nbxSupplierAddProductPrice: TNumberBox
+          Left = 21
+          Top = 481
+          Width = 543
+          Height = 33
+          AcceptExpressions = True
+          Alignment = taCenter
+          TabOrder = 2
+          Value = 1.000000000000000000
+          OnChange = nbxSupplierAddProductPriceChange
+        end
+        object btnSupplierAddProductAdd: TButton
+          Left = 21
+          Top = 519
+          Width = 543
+          Height = 47
+          Caption = 'Add'
+          TabOrder = 3
+          OnClick = btnSupplierAddProductAddClick
+        end
+      end
+      object btnSupplierAddProductAddProductImage: TButton
+        Left = 682
+        Top = 658
+        Width = 500
+        Height = 47
+        Caption = 'Add Product Image'
+        TabOrder = 1
+        OnClick = btnSupplierAddProductAddProductImageClick
+      end
+      object Panel8: TPanel
+        Left = 682
+        Top = 59
+        Width = 500
+        Height = 500
+        TabOrder = 2
+        object imgSupplierAddProduct: TImage
+          Left = 50
+          Top = 50
+          Width = 400
+          Height = 400
+          Stretch = True
+        end
+      end
+      object btnSupplierAddProductBack: TBitBtn
+        Left = 8
+        Top = 734
+        Width = 150
+        Height = 50
+        Caption = '&Back'
+        Kind = bkIgnore
+        NumGlyphs = 2
+        TabOrder = 3
+        OnClick = btnSupplierAddProductBackClick
       end
     end
   end
