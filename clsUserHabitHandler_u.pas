@@ -36,7 +36,7 @@ begin
 
       var iPos :=  Pos('#', sLine);
 
-      if not (Copy(sLine, 0, iPos - 1) = username) then
+      if not (Copy(sLine, 1, iPos - 1) = username) then
         continue;
 
       Result.Add(Copy(sLine, Pos('#', sLine) + 1).ToInteger());

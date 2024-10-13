@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cAlphaViewDatabase
+    ActiveCard = cAdminViewDatabase
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -70,7 +70,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Username'
           TabOrder = 1
-          Text = 'jamesblake'
+          Text = ''
           OnChange = edtLoginUsernameChange
         end
         object edtLoginPassword: TLabeledEdit
@@ -84,7 +84,7 @@ object frmMain: TfrmMain
           EditLabel.Height = 25
           EditLabel.Caption = 'Password'
           TabOrder = 0
-          Text = 'jamesblake123'
+          Text = ''
           OnChange = edtLoginPasswordChange
         end
         object btnLoginLogin: TButton
@@ -2109,10 +2109,9 @@ object frmMain: TfrmMain
       Height = 800
       CardIndex = 9
       TabOrder = 9
-      ExplicitTop = -64
       object dbgAdminViewDatabaseCustomer: TDBGrid
         Left = 8
-        Top = 32
+        Top = 24
         Width = 1174
         Height = 200
         DataSource = dmMain.dscCustomer
@@ -2157,8 +2156,6 @@ object frmMain: TfrmMain
       Height = 800
       CardIndex = 10
       TabOrder = 10
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object dbgAlphaViewDatabaseCustomer: TDBGrid
         Left = 8
         Top = 40
