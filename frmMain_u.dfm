@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cAlphaViewDatabase
+    ActiveCard = cCustomerEditProfile
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
@@ -629,6 +629,7 @@ object frmMain: TfrmMain
           BevelKind = bkTile
           BevelOuter = bvNone
           BorderStyle = bsNone
+          MaxLength = 20
           TabOrder = 2
           OnChange = edtCustomerSignupUsernameChange
         end
@@ -647,6 +648,7 @@ object frmMain: TfrmMain
           Height = 33
           Alignment = taCenter
           BorderStyle = bsNone
+          MaxLength = 20
           TabOrder = 3
           OnChange = edtCustomerSignupPasswordChange
         end
@@ -665,6 +667,7 @@ object frmMain: TfrmMain
           Height = 33
           Alignment = taCenter
           BorderStyle = bsNone
+          MaxLength = 100
           TabOrder = 1
           OnChange = edtCustomerSignupFirstNameChange
         end
@@ -683,6 +686,7 @@ object frmMain: TfrmMain
           Height = 33
           Alignment = taCenter
           BorderStyle = bsNone
+          MaxLength = 100
           TabOrder = 0
           OnChange = edtCustomerSignupLastNameChange
         end
@@ -700,7 +704,7 @@ object frmMain: TfrmMain
       end
       object btnSignupSignup: TButton
         Left = 600
-        Top = 655
+        Top = 658
         Width = 382
         Height = 47
         Caption = 'Signup'
@@ -1088,6 +1092,7 @@ object frmMain: TfrmMain
             Width = 234
             Height = 99
             ReadOnly = True
+            ScrollBars = ssVertical
             TabOrder = 0
           end
           object pnlStoreProductSuplierName: TPanel
@@ -1388,7 +1393,7 @@ object frmMain: TfrmMain
           BorderStyle = bsNone
           ReadOnly = True
           TabOrder = 2
-          OnChange = edtCustomerSignupUsernameChange
+          OnChange = edtCustomerEditProfileUsernameChange
         end
         object Label24: TLabel
           Left = 21
@@ -1406,7 +1411,7 @@ object frmMain: TfrmMain
           Alignment = taCenter
           BorderStyle = bsNone
           TabOrder = 3
-          OnChange = edtCustomerSignupPasswordChange
+          OnChange = edtCustomerEditProfilePasswordChange
         end
         object Label25: TLabel
           Left = 21
@@ -1424,7 +1429,7 @@ object frmMain: TfrmMain
           Alignment = taCenter
           BorderStyle = bsNone
           TabOrder = 1
-          OnChange = edtCustomerSignupFirstNameChange
+          OnChange = edtCustomerEditProfileFirstNameChange
         end
         object Label26: TLabel
           Left = 21
@@ -1442,7 +1447,7 @@ object frmMain: TfrmMain
           Alignment = taCenter
           BorderStyle = bsNone
           TabOrder = 0
-          OnChange = edtCustomerSignupLastNameChange
+          OnChange = edtCustomerEditProfileLastNameChange
         end
       end
       object btnCustomerEditProfileBack: TBitBtn
@@ -1562,7 +1567,7 @@ object frmMain: TfrmMain
             MaxLength = 8
             ReadOnly = True
             TabOrder = 4
-            OnChange = edtCustomerSignupNameOnCardChange
+            OnChange = edtCustomerEditProfileAccountNumberChange
           end
           object Label28: TLabel
             Left = 317
@@ -1583,7 +1588,7 @@ object frmMain: TfrmMain
             BevelOuter = bvNone
             BorderStyle = bsNone
             TabOrder = 0
-            OnChange = edtCustomerSignupNameOnCardChange
+            OnChange = edtCustomerEditProfileNameOnCardChange
           end
           object Label29: TLabel
             Left = 327
@@ -1601,7 +1606,7 @@ object frmMain: TfrmMain
             Date = 45569.000000000000000000
             Time = 0.977367199076979900
             TabOrder = 3
-            OnChange = dtpCustomerSignupExpireyDateChange
+            OnChange = dtpCustomerEditProfileExpireyDateChange
           end
           object Label30: TLabel
             Left = 322
@@ -1623,7 +1628,7 @@ object frmMain: TfrmMain
             BorderStyle = bsNone
             MaxLength = 3
             TabOrder = 1
-            OnChange = edtCustomerSignupSecurityCodeChange
+            OnChange = edtCustomerEditProfileSecurityCodeChange
           end
           object Label31: TLabel
             Left = 347
@@ -1642,7 +1647,7 @@ object frmMain: TfrmMain
             Mode = nbmCurrency
             TabOrder = 2
             StyleName = 'Windows10 SlateGray'
-            OnChange = nbxCustomerSignupBalanceChange
+            OnChange = nbxCustomerEditProfileBalanceChange
           end
         end
       end
@@ -1831,6 +1836,7 @@ object frmMain: TfrmMain
           Width = 543
           Height = 33
           Alignment = taCenter
+          MaxLength = 100
           TabOrder = 0
           OnChange = edtSupplierAddProductNameChange
         end
@@ -1852,6 +1858,7 @@ object frmMain: TfrmMain
           Font.Name = 'Segoe UI'
           Font.Style = []
           ParentFont = False
+          ScrollBars = ssVertical
           TabOrder = 1
           OnChange = redSupplierAddProductDescriptionChange
         end
@@ -1943,7 +1950,7 @@ object frmMain: TfrmMain
       Height = 800
       CardIndex = 8
       TabOrder = 8
-      OnEnter = cSupplierAddProductEnter
+      OnEnter = cSupplierEditProductEnter
       OnExit = cSupplierEditProductExit
       object StackPanel13: TStackPanel
         Left = 8
@@ -2006,6 +2013,7 @@ object frmMain: TfrmMain
           Width = 543
           Height = 33
           Alignment = taCenter
+          MaxLength = 100
           TabOrder = 0
           OnChange = edtSupplierEditProductNameChange
         end
@@ -2109,6 +2117,7 @@ object frmMain: TfrmMain
       Height = 800
       CardIndex = 9
       TabOrder = 9
+      OnEnter = cAdminViewDatabaseEnter
       object dbgAdminViewDatabaseCustomer: TDBGrid
         Left = 8
         Top = 24
@@ -2156,6 +2165,7 @@ object frmMain: TfrmMain
       Height = 800
       CardIndex = 10
       TabOrder = 10
+      OnEnter = cAlphaViewDatabaseEnter
       object dbgAlphaViewDatabaseCustomer: TDBGrid
         Left = 8
         Top = 40

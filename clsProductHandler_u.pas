@@ -106,7 +106,6 @@ begin
     end;
 
 end;
-
 function TProductHandler.getProductsIdToQuantity
                                 (const products: TList<IProduct>)
                                 : TDictionary<Integer, Integer>;
@@ -179,7 +178,7 @@ begin
 
   for var p in products do
     begin
-      updateProduct(p);
+      updateProduct(p); //updates the product in the database
     end;
 
 end;

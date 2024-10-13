@@ -44,7 +44,7 @@ begin
   for var p in Products do
       begin
         if (p.Id = product.Id) then
-          iQuantInCart := iQuantInCart + p.Quantity;
+          iQuantInCart := iQuantInCart + 1;
       end;
 
   if (product.Quantity < iQuantInCart + quantity) then

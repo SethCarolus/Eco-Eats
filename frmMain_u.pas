@@ -257,11 +257,24 @@ type
     procedure nbxSupplierEditProductPriceChange(Sender: TObject);
     procedure cSupplierEditProductExit(Sender: TObject);
     procedure btnCustomerViewProfileEditClick(Sender: TObject);
+    procedure edtCustomerEditProfileUsernameChange(Sender: TObject);
+    procedure edtCustomerEditProfilePasswordChange(Sender: TObject);
+    procedure edtCustomerEditProfileFirstNameChange(Sender: TObject);
+    procedure edtCustomerEditProfileLastNameChange(Sender: TObject);
+    procedure edtCustomerEditProfileAccountNumberChange(Sender: TObject);
+    procedure edtCustomerEditProfileNameOnCardChange(Sender: TObject);
+    procedure edtCustomerEditProfileSecurityCodeChange(Sender: TObject);
+    procedure dtpCustomerEditProfileExpireyDateChange(Sender: TObject);
+    procedure nbxCustomerEditProfileBalanceChange(Sender: TObject);
+    procedure cSupplierEditProductEnter(Sender: TObject);
+    procedure cAdminViewDatabaseEnter(Sender: TObject);
+    procedure cAlphaViewDatabaseEnter(Sender: TObject);
   private
     { Private declarations }
     procedure NavigateToFirstPage(const username: string; const login : ILogin);
     procedure UpdateLoginPageComponents();
     procedure UpdateCustomerSignupComponents();
+    procedure UpdateCustomerEditComponents();
     procedure UpdateHabits();
     procedure SaveProfilePicture(const username: string);
     procedure LogOut();
@@ -326,7 +339,8 @@ implementation
 
 procedure TfrmMain.btnAboutUsClick(Sender: TObject);
 begin
-  var signup := TFactory.createSignup();
+  ShowMessage('Eco Eats was developed in order to provide you with health products!');
+  ShowMessage('Hope you enjoy your stay!');
 end;
 procedure TfrmMain.btnCustomerEditProfileBackClick(Sender: TObject);
 begin
@@ -359,6 +373,7 @@ begin
   var bankCardHandler := TFactory.createBankCardHandler();
 
   try
+    // Updating Database
     customerHandler.editCustomer(customer, password);
     bankCardHandler.updateBankCard(bankCard);
   except
@@ -367,6 +382,7 @@ begin
 
   ShowMessage('The changes were saved successfully!');
 
+  // Updating Application State
   with TFactory.createLogin do
     begin
       setupCustomer(customer.Username);
@@ -398,6 +414,7 @@ begin
   var username : string := edtLoginUsername.Text;
   var password : string := edtLoginPassword.Text;
 
+  // Data Validation
   if (string.IsNullOrEmpty(username)) then
     begin
       ShowMessage('Enter in a username');
@@ -409,10 +426,12 @@ begin
       ShowMessage('Enter in a password');
       Exit;
     end;
+  //
 
   try
     var login : ILogin := TFactory.CreateLogin();
 
+    // Checking if username and password are correct
     if (not login.userExists(username)) or (not login.passwordCorrect(username, password)) then
       begin
         ShowMessage('Username or password incorrect');
@@ -431,7 +450,7 @@ end;
 
 procedure TfrmMain.btnLoginSignupClick(Sender: TObject);
 begin
-  cplMain.ActiveCard := cCustomerSignup;
+  CurrentCard := cCustomerSignup;
 end;
 
 procedure TfrmMain.btnSignupAddProfilePictureClick(Sender: TObject);
@@ -466,7 +485,7 @@ begin
 end;
 procedure TfrmMain.btnSignupSignupClick(Sender: TObject);
 begin
-  var sprofilePicture := edtCustomerSignupUsername.Text + TPath.GetExtension(sProfilePictureSignupPage);
+  var sProfilePicture := edtCustomerSignupUsername.Text + TPath.GetExtension(sProfilePictureSignupPage);
 
   var signup : ISignup := TFactory.createSignup();
 
@@ -482,7 +501,7 @@ begin
                                          bank.Id);
 
 
-                                          // Make Provision for accountNumber
+
   var customer := TFactory.createCustomer( -1,
                                           edtCustomerSignupUsername.Text,
                                           edtCustomerSignupFirstName.Text,
@@ -499,6 +518,7 @@ begin
     end;
 
   try
+    // Making changes to the database
     signup.insertBankCard(bankCard);
     customer.BankCardId := signup.getBankCardWith(bankCard.AccountNumber).Id;
     signup.insertCustomer(customer, edtCustomerSignupPassword.Text);
@@ -508,14 +528,14 @@ begin
         ShowMessage('User with your username already exists!');
         Exit;
       end;
-      {
-    on e : EBankCardExissException do
+    on e : Exception do
       begin
-
+        ShowMessage('An Error occured during the signup process!: ' + e.Message);
+        Exit;
       end;
-      }
   end;
 
+  // Saving Profile Picture to the profile pictures directory
   SaveProfilePicture(customer.Username);
 
   ShowMessage('Sign Up Completed');
@@ -530,6 +550,7 @@ begin
     end;
 
   try
+    // Attempting to add a certian number of 
     Cart.add(SelectedProductInStore, spdStoreProductQuantity.Value);
   except
     on E: ENotEnoughStockException do
@@ -538,7 +559,6 @@ begin
         Exit;
       end;
   end;
-
   UpdateStoreComponents;
 
 end;
@@ -566,6 +586,7 @@ procedure TfrmMain.btnStorePurchaseClick(Sender: TObject);
 begin
   var paymentHandler := TFactory.createPaymentHandler();
   try
+    // Attempting to make a payment
     paymentHandler.makePayment(currentBankCard, Cart);
   except
     on ECustomerInsuffientFunds do
@@ -576,6 +597,11 @@ begin
     on EArgumentNilException do
       begin
         ShowMessage('Internal Program Error!' + #13 + 'If this continues, lodge a complaint or contact the developers.');
+        Exit;
+      end;
+    on e: Exception do
+      begin
+        ShowMessage('Error while making payment!: ' + e.Message);
         Exit;
       end;
   end;
@@ -602,17 +628,30 @@ end;
 
 procedure TfrmMain.btnSupplierAddProductAddClick(Sender: TObject);
 begin
+  if (nbxSupplierAddProductQuantity.Value <  1) then
+    begin
+      ShowMessage('Quantity cannot be less than 1');
+      Exit;
+    end;
+  if (nbxSupplierAddProductPrice.Value < 1) then
+    begin
+      ShowMessage('Price cannot be less than 1');
+      Exit;
+    end;
+
   var product := TFactory.createProduct(-1, edtSupplierAddProductName.Text,
                                       redSupplierAddProductDescription.Text,
                                       StrToFloat(nbxSupplierAddProductPrice.Value.ToString()),
                                       StrToInt(nbxSupplierAddProductQuantity.Value.ToString()),
                                       sProductPictureAddProductPage,
                                       currentSupplier.Id);
+                                      
 
   var productHandler := TFactory.createProductHandler();
   product.Id := productHandler.getNextAvailableId();
   product.Picture := product.Name + product.Id.ToString() + '.jpeg';
 
+  // Inserting a product into the database
   productHandler.insertProduct(product);
   SaveProductPicture(product);
 
@@ -677,6 +716,7 @@ end;
 
 procedure TfrmMain.btnSupplierEditProductMakeChangesClick(Sender: TObject);
 begin
+  // Getting values from user
   var name := edtSupplierEditProductName.Text;
   var description := redSupplierEditProductDescription.Text;
   var price: Double := nbxSupplierEditProductPrice.Value;
@@ -695,6 +735,7 @@ begin
 
   var productHandler := TFactory.createProductHandler();
   try
+    // Updating product in the database
     productHandler.updateProduct(product);
   except
     on E: Exception do
@@ -813,6 +854,7 @@ begin
       end;
   end;
 
+  // Place Customer Information in the respective components
   edtCustomerViewProfileUsername.Text := currentCustomer.Username;
   edtCustomerViewProfilePassword.Text :=  currentCustomerPassword;
   edtCustomerViewProfileFirstName.Text := currentCustomer.FirstName;
@@ -865,6 +907,11 @@ end;
 procedure TfrmMain.cSupplierAddProductEnter(Sender: TObject);
 begin
   UpdateSupplierAddProductComponents();
+end;
+
+procedure TfrmMain.cSupplierEditProductEnter(Sender: TObject);
+begin
+  UpdateSupplierEditProductComponents();
 end;
 
 procedure TfrmMain.cSupplierEditProductExit(Sender: TObject);
@@ -967,9 +1014,42 @@ begin
     end;
 end;
 
+procedure TfrmMain.dtpCustomerEditProfileExpireyDateChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
 procedure TfrmMain.dtpCustomerSignupExpireyDateChange(Sender: TObject);
 begin
   UpdateCustomerSignupComponents();
+end;
+
+procedure TfrmMain.cAdminViewDatabaseEnter(Sender: TObject);
+begin
+  if  not (dmMain.tblCustomer.Active) then
+    dmMain.tblCustomer.Active := True;
+
+  if not (dmMain.tblSupplier.Active) then
+    dmMain.tblSupplier.Active := True;
+
+  if not (dmMain.tblBankCard.Active) then
+    dmMain.tblBankCard.Active := True;
+end;
+
+procedure TfrmMain.cAlphaViewDatabaseEnter(Sender: TObject);
+begin
+  if  not (dmMain.tblCustomer.Active) then
+    dmMain.tblCustomer.Active := True;
+
+  if not (dmMain.tblSupplier.Active) then
+    dmMain.tblSupplier.Active := True;
+
+  if not (dmMain.tblBankCard.Active) then
+    dmMain.tblBankCard.Active := True;
+
+  if not (dmMain.tblAdmin.Active) then
+    dmMain.tblAdmin.Active := True;
+  
 end;
 
 procedure TfrmMain.cCustomerEditProfileEnter(Sender: TObject);
@@ -1015,6 +1095,43 @@ begin
   nbxCustomerEditProfileBalance.Value := currentBankCard.Balance;
 
   sProfilePictureEditPage := currentCustomer.ProfilePicture;
+
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileAccountNumberChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileFirstNameChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileLastNameChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileNameOnCardChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfilePasswordChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileSecurityCodeChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
+end;
+
+procedure TfrmMain.edtCustomerEditProfileUsernameChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
 end;
 
 procedure TfrmMain.edtCustomerSignupExpireyDateChange(Sender: TObject);
@@ -1040,6 +1157,12 @@ end;
 procedure TfrmMain.edtCustomerSignupPasswordChange(Sender: TObject);
 begin
   UpdateCustomerSignupComponents();
+
+  if (Length(edtCustomerSignupPassword.Text) > 20) then
+    begin
+      ShowMessage('password must be a max of 20 characters');
+      Exit;
+    end;
 end;
 
 procedure TfrmMain.edtCustomerSignupSecurityCodeChange(Sender: TObject);
@@ -1050,6 +1173,23 @@ end;
 procedure TfrmMain.edtCustomerSignupUsernameChange(Sender: TObject);
 begin
   UpdateCustomerSignupComponents();
+
+  if (Length(edtCustomerSignupUsername.Text) > 20) then
+    begin
+      ShowMessage('Username must be a max of 20 characters');
+      Exit;
+    end;
+
+  for var c in edtCustomerSignupUsername.Text do
+    begin
+      if not (c in ['a'..'z', 'A'..'Z', '0'..'9']) and not (c = '_') then
+        begin
+          ShowMessage('Username contains invalid characters!');
+          Exit;
+        end;
+    end;
+
+
 end;
 
 procedure TfrmMain.edtLoginPasswordChange(Sender: TObject);
@@ -1165,6 +1305,8 @@ begin
   end;
 
   var logOut := TFactory.createLogout;
+  
+  // Loging User Habits to the text file
   logOut.LogTimeSpent(username, Ceil(Timer.elapsedSeconds / 60));
   timer := nil;
 end;
@@ -1175,6 +1317,7 @@ begin
   if (iSelectedIndexofBankOnEditPage =  lstCustomerEditProfileBanks.ItemIndex) then
       Exit;
   iSelectedIndexofBankOnEditPage := lstCustomerEditProfileBanks.ItemIndex;
+  UpdateCustomerEditComponents();
 end;
 
 procedure TfrmMain.lstCustomerSignupBanksClick(Sender: TObject);
@@ -1235,6 +1378,7 @@ procedure TfrmMain.NavigateToFirstPage(const username: string; const login : ILo
 begin
   currentUserType := login.getUserType(username);
 
+    // Navigating based on the type of the user
     case currentUserType of
         utCustomer:
           begin
@@ -1258,6 +1402,11 @@ begin
             CurrentCard := cAlphaViewDatabase;
           end;
     end;
+end;
+
+procedure TfrmMain.nbxCustomerEditProfileBalanceChange(Sender: TObject);
+begin
+  UpdateCustomerEditComponents();
 end;
 
 procedure TfrmMain.nbxCustomerSignupBalanceChange(Sender: TObject);
@@ -1374,6 +1523,26 @@ begin
   cplMain.ActiveCard := CurrentCard;
 end;
 
+procedure TfrmMain.UpdateCustomerEditComponents;
+begin
+  if (string.IsNullOrWhiteSpace(edtCustomerEditProfileUsername.Text)) or
+      (string.IsNullOrWhiteSpace(edtCustomerEditProfilePassword.Text)) or
+      (string.IsNullOrWhiteSpace(edtCustomerEditProfileFirstName.Text)) or
+      (string.IsNullOrWhiteSpace(edtCustomerEditProfileLastName.Text)) or
+      (string.IsNullOrWhiteSpace(edtCustomerEditProfileNameOnCard.Text)) or
+      (dtpCustomerEditProfileExpireyDate.DateTime <= Today) or
+      (string.IsNullOrWhiteSpace(edtCustomerEditProfileSecurityCode.Text)) or
+      (nbxCustomerEditProfileBalance.Value < 0)
+      or (lstCustomerEditProfileBanks.ItemIndex = -1) or
+      (string.IsNullOrWhiteSpace(sProfilePictureEditPage)) then
+  begin
+    btnCustomerEditProfileMakeChanges.Enabled := False;
+    Exit;
+  end;
+
+  btnCustomerEditProfileMakeChanges.Enabled := True;
+end;
+
 procedure TfrmMain.UpdateCustomerSignupComponents;
 begin
   if (string.IsNullOrWhiteSpace(edtCustomerSignupUsername.Text)) or
@@ -1384,7 +1553,8 @@ begin
       (dtpCustomerSignupExpireyDate.DateTime <= Today) or
       (string.IsNullOrWhiteSpace(edtCustomerSignupSecurityCode.Text)) or
       (nbxCustomerSignupBalance.Value < 0)
-      or (lstCustomerSignupBanks.ItemIndex = -1) then
+      or (lstCustomerSignupBanks.ItemIndex = -1) or
+      (string.IsNullOrWhiteSpace(sProfilePictureSignupPage)) then
   begin
     btnSignupSignup.Enabled := False;
     Exit;
@@ -1398,7 +1568,7 @@ procedure TfrmMain.UpdateHabits();
 begin
   var habitHandler := TFactory.createUserHabitHandler();
 
-
+  // Getting Habits from the database
   var habits := habitHandler.getUserHabitsFor(currentCustomer.Username);
 
 
@@ -1408,6 +1578,7 @@ begin
       Exit;
     end;
 
+  // Displaying the habits
   HideCaret(redViewHabits.Handle);
   redViewHabits.Paragraph.TabCount := 1;
   redViewHabits.Paragraph.Tab[0] := 100;
