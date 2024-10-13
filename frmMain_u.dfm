@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Width = 1200
     Height = 800
     Align = alClient
-    ActiveCard = cAdminViewDatabase
+    ActiveCard = cAlphaViewDatabase
     BevelOuter = bvNone
     Caption = 'CardPanel1'
     TabOrder = 0
